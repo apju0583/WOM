@@ -9,13 +9,13 @@ public class DoorScript : MonoBehaviour
     public string transferMapName;
     public string startPointID;
 
-    private Char thePlayer;
+    private Player thePlayer;
     private bool isPlayerInRange = false;
     private AudioSource audioSource;
 
     void Start()
     {
-        thePlayer = FindObjectOfType<Char>();
+        thePlayer = FindObjectOfType<Player>();
         audioSource = GetComponent<AudioSource>();
     }
 

@@ -124,3 +124,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d608ea77c7cb8c8429a869809ea497de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  progressBarPrefab: {fileID: 9083710243236443273, guid: fb60fd6dce0be2944806820edb5ae77a, type: 3}
+  collectTime: 3

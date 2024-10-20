@@ -5,12 +5,12 @@ using UnityEngine;
 public class StartPoint : MonoBehaviour
 {
     public string startPointID;  // Start point ID to match the transfer point
-    private Char thePlayer;
+    private Player thePlayer;
     private CameraManager theCamera;
 
     void Start()
     {
-        thePlayer = FindObjectOfType<Char>();
+        thePlayer = FindObjectOfType<Player>();
         theCamera = FindObjectOfType<CameraManager>();
 
         // Check if this start point's ID matches the player's current start point ID

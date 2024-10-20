@@ -9,11 +9,11 @@ public class TransferMap : MonoBehaviour
     public string transferMapName;
     public string startPointID;
 
-    private Char thePlayer;
+    private Player thePlayer;
 
     void Start()
     {
-        thePlayer = FindObjectOfType<Char>();
+        thePlayer = FindObjectOfType<Player>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
