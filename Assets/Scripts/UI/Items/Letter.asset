@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 583e66efe60813c41aa66e86a770a38e, type: 3}
+  m_Name: Letter
+  m_EditorClassIdentifier: 
+  itemName: "\uD3B8\uC9C0"
+  itemDesc: "\uD560\uC544\uBC84\uC9C0\uAC00 \uBCF4\uB0B8 \uD3B8\uC9C0\uC774\uB2E4."
+  rank: 0
+  price: 1700
+  itemImage: {fileID: -1172609794, guid: f057a6b35284b2b479cdab8979f9b4ae, type: 3}

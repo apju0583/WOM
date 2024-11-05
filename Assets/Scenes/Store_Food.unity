@@ -12688,7 +12688,8 @@ GameObject:
   - component: {fileID: 2104976809}
   - component: {fileID: 2104976808}
   - component: {fileID: 2104976807}
-  m_Layer: 0
+  - component: {fileID: 2104976811}
+  m_Layer: 7
   m_Name: NPC_Merchant_Food
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12809,3 +12810,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2104976811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2104976806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f30340a82d1f014bbfaab8b9e77f0bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 2000
+  isNPC: 1
+  type: 1
+  questId: 
+  questIndex: 0

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class Plant : MonoBehaviour
 {
     public event Action OnCollected;
+    public Item plantItem;
 
     public GameObject progressBarPrefab;
     private GameObject progressBarInstance;
@@ -32,14 +33,12 @@ public class Plant : MonoBehaviour
                 collectProgress += Time.deltaTime / collectTime;
                 progressBarImage.fillAmount = collectProgress;
 
-
                 if (collectProgress >= 1f)
                 {
                     CollectPlant();
                 }
             }
         }
-
         else if (isCollecting && Input.GetKeyUp(KeyCode.E))
         {
             ResetCollection();
@@ -72,7 +71,7 @@ public class Plant : MonoBehaviour
 
         if (progressBarImage != null)
         {
-            progressBarImage.fillAmount = 0f; 
+            progressBarImage.fillAmount = 0f;
         }
     }
 
@@ -91,7 +90,16 @@ public class Plant : MonoBehaviour
     private void CollectPlant()
     {
         OnCollected?.Invoke();
+        AddPlantToInventory();
         Destroy(gameObject);
         ResetCollection();
+    }
+
+    private void AddPlantToInventory()
+    {
+        Inventory inventory = GameManager.instance.GetInventory().gameObject.GetComponent<Inventory>();
+        inventory.AddItem(plantItem);
+        inventory.FreshSlot();
+        GameManager.instance.GetItemBar().RefreshSlot();
     }
 }

@@ -1,0 +1,15 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[CreateAssetMenu] public class Item : ScriptableObject
+{
+    public enum ItemType { equip, use, etc }
+
+    public string itemName;
+    public ItemType type;
+    [TextArea] public string itemDesc;
+    public int rank;
+    public int price;
+    public Sprite itemImage;
+}
