@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Diamond
   m_EditorClassIdentifier: 
   itemName: "\uB2E4\uC774\uC544\uBAAC\uB4DC"
+  type: 2
   itemDesc: "\uBAAC\uC2A4\uD130\uAC00 \uAC00\uC9C0\uACE0 \uC788\uB358 \uB2E4\uC774\uC544\uBAAC\uB4DC\uC774\uB2E4."
   rank: 0
   price: 1100

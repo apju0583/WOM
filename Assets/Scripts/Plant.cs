@@ -21,7 +21,7 @@ public class Plant : MonoBehaviour
 
     void Update()
     {
-        if (isPlayerInRange && Input.GetKey(KeyCode.E))
+        if (isPlayerInRange && Input.GetKey(KeyCode.E)) //식물에 상호작용 시
         {
             if (!isCollecting)
             {
@@ -39,6 +39,7 @@ public class Plant : MonoBehaviour
                 }
             }
         }
+        
         else if (isCollecting && Input.GetKeyUp(KeyCode.E))
         {
             ResetCollection();

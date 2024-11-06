@@ -107,7 +107,7 @@ public class LoadingSceneController : MonoBehaviour
         }
     }
 
-    private void DisplayRandomMessage() 
+    private void DisplayRandomMessage() //로딩창 텍스트 출력
     {
         if (loadingMessages.Count > 0) 
         {
@@ -117,7 +117,7 @@ public class LoadingSceneController : MonoBehaviour
         
         else 
         {
-            loadingText.text = "Loading...";
+            loadingText.text = "...Loading...";
         }
     }
 

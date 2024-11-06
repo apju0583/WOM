@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Grape
   m_EditorClassIdentifier: 
   itemName: "\uD3EC\uB3C4"
+  type: 1
   itemDesc: "\uB9C8\uC744\uC5D0\uC11C \uD0A4\uC6B4 \uD3EC\uB3C4\uC774\uB2E4."
   rank: 0
   price: 1300

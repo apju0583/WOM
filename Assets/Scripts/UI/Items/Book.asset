@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Book
   m_EditorClassIdentifier: 
   itemName: "\uCC45"
+  type: 2
   itemDesc: "\uB9C8\uC744\uC758 \uC5ED\uC0AC\uAC00 \uC801\uD600\uC788\uB294 \uCC45\uC774\uB2E4."
   rank: 0
   price: 600

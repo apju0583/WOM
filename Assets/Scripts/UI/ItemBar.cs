@@ -9,22 +9,28 @@ public class ItemBar : MonoBehaviour
     [SerializeField] Slot[] slots;
 
     #if UNITY_EDITOR
-        private void OnValidate() {
+        private void OnValidate() 
+        {
             slots = slotParent.GetComponentsInChildren<Slot>();
         }
     #endif
 
-    void Awake() {
+    void Awake() 
+    {
         RefreshSlot();
     }
 
-    public void RefreshSlot() {
+    public void RefreshSlot() 
+    {
         int i = 0;
 
-        for (; i < inventory.items.Count && i < slots.Length; i++) {
+        for (; i < inventory.items.Count && i < slots.Length; i++) 
+        {
             slots[i].item = inventory.items[i];
         }
-        for (; i < slots.Length; i++) {
+
+        for (; i < slots.Length; i++) 
+        {
             slots[i].item = null;
         }
     }

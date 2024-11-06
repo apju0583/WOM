@@ -9,94 +9,93 @@ public class QuestManager : MonoBehaviour
     public static QuestManager instance;
 
     public Quest[] quests;
-    public GameObject[] questButtons;
     public Text title;
     public Text detail;
+    public Text request;
 
-    void Awake() {
-        if (instance == null) {
+    void Awake() 
+    {
+        if (instance == null) 
+        {
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else {
-            if (instance != this) {
+
+        else 
+        {
+            if (instance != this) 
+            {
                 Destroy(this.gameObject);
             }
         }
     }
 
-    void Start() {
-        int i = 0;
-        for (; i < questButtons.Length && i < GameManager.instance.player.quests.Count; i++) {
-            questButtons[i].SetActive(true);
-            Text questTitle = questButtons[i].GetComponentInChildren<Text>();
-            questTitle.text = GameManager.instance.player.quests[i].questTitle;
-        }
-        for (; i < questButtons.Length; i++) {
-            questButtons[i].SetActive(false);
-        }
-
+    void Start() 
+    {
         title.text = "";
         detail.text = "";
+        request.text = "";
     }
 
-    public void Refresh() {
-        int i = 0;
-        for (; i < questButtons.Length && i < GameManager.instance.player.quests.Count; i++) {
-            questButtons[i].SetActive(true);
-            Text questTitle = questButtons[i].GetComponentInChildren<Text>();
-            questTitle.text = GameManager.instance.player.quests[i].questTitle;
-        }
-        for (; i < questButtons.Length; i++) {
-            questButtons[i].SetActive(false);
-        }
+    public void Refresh() 
+    {
+        title.text = GameManager.instance.player.quest.questTitle;
+        detail.text = GameManager.instance.player.quest.questDetail;
+        Inventory inven = GameManager.instance.GetInventory().gameObject.GetComponent<Inventory>();
+        int itemIndex = inven.items.IndexOf(quests[GameManager.instance.player.quest.questId].requestItem);
+        int itemCnt = itemIndex == -1 ? 0 : inven.itemCounts[itemIndex];
+        request.text = GameManager.instance.player.quest.requestItem.itemName + " (" + itemCnt + "/" + GameManager.instance.player.quest.requestCount + ")";
     }
 
-    public void SetText() {
+    public void SetText() 
+    {
         title.text = "";
         detail.text = "";
+        request.text = "";
     }
 
-    public void SetText(int index) {
+    public void SetText(int index) 
+    {
         title.text = quests[index].questTitle;
         detail.text = quests[index].questDetail;
     }
 
-    public void Accept(int index) {
-        GameManager.instance.player.quests.Add(quests[index]);
-        GameManager.instance.player.questStatus.Add(false);
-        Refresh();
+    public void Accept(int index) 
+    {
+        GameManager.instance.player.quest = quests[index];
+        GameManager.instance.player.questStatus = false;
+        GameManager.instance.player.clearStatus[index] = false;
         Debug.Log("퀘스트를 수락했습니다");
-        // if (GameManager.instance.player.clearQuests.Last() == index - 1) {
-        //     GameManager.instance.player.quests.Add(quests[index]);
-        //     Refresh();
-        //     Debug.Log("퀘스트를 수락했습니다.");
-        // }
-        // else {
-        //     Debug.Log("퀘스트를 순서대로 진행해주세요");
-        // }
+        Refresh();
     }
 
-    public bool CheckClear(int index) {
+    public bool CheckClear(int index) 
+    {
         Inventory inven = GameManager.instance.GetInventory().gameObject.GetComponent<Inventory>();
         int itemIndex = inven.items.IndexOf(quests[index].requestItem);
 
         if (itemIndex == -1) {
             return false;
         }
+
         return inven.itemCounts[itemIndex] >= quests[index].requestCount;
     }
 
-    public void QuestClear(int index) {
-        if (CheckClear(index)) {
+    public void QuestClear(int index) 
+    {
+        if (CheckClear(index)) 
+        {
             Inventory inven = GameManager.instance.GetInventory().gameObject.GetComponent<Inventory>();
             int itemIndex = inven.items.IndexOf(quests[index].requestItem);
 
-            inven.RemoveItem(itemIndex);
+            inven.RemoveItem(itemIndex, quests[index].requestCount);
             inven.AddGold(quests[index].reward);
             inven.FreshSlot();
             Debug.Log("\"" + quests[index].questTitle + "\"" + " 클리어!");
-            Refresh();
+            GameManager.instance.player.quest = null;
+            GameManager.instance.player.questStatus = false;
+            GameManager.instance.player.clearStatus[index] = true;
+            SetText();
         }
     }
 }

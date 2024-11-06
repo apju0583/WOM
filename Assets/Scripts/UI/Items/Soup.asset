@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Soup
   m_EditorClassIdentifier: 
   itemName: "\uD325\uC8FD"
+  type: 1
   itemDesc: "\uBAB8\uC744 \uB370\uC6CC\uC8FC\uB294 \uD325\uC8FD\uC774\uB2E4."
   rank: 0
   price: 2800

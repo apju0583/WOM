@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Bell
   m_EditorClassIdentifier: 
   itemName: "\uC885"
+  type: 2
   itemDesc: "\uC8FC\uC758\uB97C \uB04C\uAE30\uC704\uD55C \uC885\uC774\uB2E4."
   rank: 0
   price: 500

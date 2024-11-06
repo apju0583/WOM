@@ -4,13 +4,14 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
     [Header("# Talk")]
-    // public TalkManager talkManager;
     public Animator talkPanel;
     public TypeEffect talk;
     public GameObject shopButtons;
@@ -19,7 +20,6 @@ public class GameManager : MonoBehaviour
     public int talkIndex;
 
     [Header("# Quest")]
-    // public QuestManager questManager;
     public GameObject questPanel;
 
     [Header("# Inventory")]
@@ -48,31 +48,42 @@ public class GameManager : MonoBehaviour
     [Header("# ETC")]
     public Player player;
     public GameObject[] hps;
+    public GameObject[] halfHps;
     public int itemId;
     public bool isAction;
-    // public static GameObject[] dontDestroy;
     bool mapShow;
     [SerializeField] SceneAsset[] scenes;
     [SerializeField] GameObject selectPanel;
     [SerializeField] GameObject selectPanel2;
     [SerializeField] GameObject selectPanel3;
 
-    void Awake() { // 시작되면 각종 창들 비활성화
-        // instance = this;
-        if (instance == null) {
+    void Awake() // 시작되면 각종 창들 비활성화
+    {
+        if (instance == null) 
+        {
             instance = this;
             DontDestroyOnLoad(gameObject);
-        }
-        else {
-            if (instance != this) {
+        } 
+
+        else
+        {
+            if (instance != this) 
+            {
                 Destroy(this.gameObject);
             }
         }
 
-        // 아이템 설명창 비활성화
-        if (itemDesc.activeInHierarchy) {
+        player = FindObjectOfType<Player>(); // player를 찾는 코드 추가
+        if (player == null) 
+        {
+            Debug.LogError("Player 오브젝트를 찾을 수 없습니다");
+        }
+
+        if (itemDesc.activeInHierarchy) // 아이템 설명창 비활성화
+        {
             itemDesc.SetActive(false);
         }
+
         slots = inventory.gameObject.GetComponentsInChildren<Slot>();
 
         // 인벤토리창 비활성화
@@ -85,53 +96,63 @@ public class GameManager : MonoBehaviour
         questTrans.anchoredPosition = new Vector2(2000f, 1500f);
 
         // 상점창 비활성화
-        for (int i = 0; i < shopList.Length; i++) {
+        for (int i = 0; i < shopList.Length; i++) 
+        {
             Image[] itemImage = shopList[i].GetComponentsInChildren<Image>();
             Text itemName = shopList[i].GetComponentInChildren<Text>();
 
             itemImage[1].sprite = item[i].itemImage;
             itemName.text = item[i].itemName + "  가격: " + item[i].price + "골드";
         }
+
         shopPanel.SetActive(false);
 
         // 판매창 비활성화
         Inventory inven = inventory.gameObject.GetComponent<Inventory>();
         int sellIndex = 0;
-        for (; sellIndex < inven.items.Count; sellIndex++) {
+        for (; sellIndex < inven.items.Count; sellIndex++) 
+        {
             Image[] itemImage = sellList[sellIndex].GetComponentsInChildren<Image>();
             Text itemName = sellList[sellIndex].GetComponentInChildren<Text>();
 
             itemImage[1].sprite = inven.items[sellIndex].itemImage;
             itemName.text = inven.items[sellIndex].itemName + "  가격: " + inven.items[sellIndex].price * 0.8 + "골드";
         }
-        for (; sellIndex < sellList.Length; sellIndex++) {
+
+        for (; sellIndex < sellList.Length; sellIndex++) 
+        {
             sellList[sellIndex].SetActive(false);
         }
+
         RectTransform sellTrans = sellPanel.GetComponent<RectTransform>();
         sellTrans.anchoredPosition = new Vector2(-2000f, 0f);
 
         // 업그레이드창 비활성화
         int upgradeIndex = 0;
-        for (; upgradeIndex < inven.items.Count; upgradeIndex++) {
+        for (; upgradeIndex < inven.items.Count; upgradeIndex++) 
+        {
             Image[] itemImage = upgradeList[upgradeIndex].GetComponentsInChildren<Image>();
             Text itemName = upgradeList[upgradeIndex].GetComponentInChildren<Text>();
 
             itemImage[1].sprite = inven.items[upgradeIndex].itemImage;
             itemName.text = inven.items[upgradeIndex].itemName + "  비용: " + inven.items[upgradeIndex].price * 0.1 + "골드";
         }
-        for (; upgradeIndex < upgradeList.Length; upgradeIndex++) {
+
+        for (; upgradeIndex < upgradeList.Length; upgradeIndex++) 
+        {
             upgradeList[upgradeIndex].SetActive(false);
         }
+
         RectTransform upgradeTrans = upgradePanel.GetComponent<RectTransform>();
         upgradeTrans.anchoredPosition = new Vector2(0f, 1500f);
 
-        // 구매선택창 비활성화
-        if (selectPanel.activeInHierarchy) {
+        if (selectPanel.activeInHierarchy) // 구매선택창 비활성화
+        {
             selectPanel.SetActive(false);
         }
 
-        // 판매선택창 비활성화
-        if (selectPanel2.activeInHierarchy) {
+        if (selectPanel2.activeInHierarchy) // 판매선택창 비활성화
+        {
             selectPanel2.SetActive(false);
         }
 
@@ -141,19 +162,100 @@ public class GameManager : MonoBehaviour
         map.Init();
         minimap.SetActive(false);
 
-        // 오브젝트들 파괴 안되게 설정
-        // for (int i = 0; i < dontDestroy.Length; i++) {
-        //     DontDestroyOnLoad(dontDestroy[i]);
-        // }
+        for (int i = 0; i < QuestManager.instance.quests.Length; i++) 
+        {
+            player.clearStatus[i] = false;
+        }
     }
 
-    void OnEnable() {
+    public void SaveGame()
+    {
+        if (player != null && player.inventory != null)
+        {
+            SaveData data = new SaveData();
+
+            // 플레이어 위치 데이터 저장
+            data.playerPositionX = player.transform.position.x;
+            data.playerPositionY = player.transform.position.y;
+            data.playerPositionZ = player.transform.position.z;
+            data.gold = player.inventory.gold;
+
+            // 인벤토리 데이터 저장
+            data.inventoryItems = new List<string>(player.inventory.names);
+            data.inventoryCounts = new List<int>(player.inventory.itemCounts);
+
+            // 퀘스트 데이터 저장
+            if (player.quest != null)
+            {
+                data.questId = player.quest.questId;
+                data.questStatus = player.questStatus;
+            }
+
+            // 직렬화 및 저장
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream file = File.Create(Application.persistentDataPath + "/saveData.dat");
+            formatter.Serialize(file, data);
+            file.Close();
+
+            Debug.Log("저장 완료");
+        }
+
+        else
+        {
+            Debug.LogError("플레이어 혹은 인벤토리 데이터 오류");
+        }
+    }
+
+
+    public void LoadGame()
+    {
+        if (File.Exists(Application.persistentDataPath + "/saveData.dat"))
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            FileStream file = File.Open(Application.persistentDataPath + "/saveData.dat", FileMode.Open);
+            SaveData data = (SaveData)formatter.Deserialize(file);
+            file.Close();
+
+            // 플레이어 위치 데이터 불러오기
+            player.transform.position = new Vector3(data.playerPositionX, data.playerPositionY, data.playerPositionZ);
+            player.inventory.gold = data.gold;
+
+            // 인벤토리 데이터 불러오기
+            player.inventory.names = new List<string>(data.inventoryItems);
+            player.inventory.itemCounts = new List<int>(data.inventoryCounts);
+            player.inventory.FreshSlot();
+
+            // 퀘스트 데이터 불러오기
+            if (data.questId >= 0 && data.questId < QuestManager.instance.quests.Length)
+            {
+                player.quest = QuestManager.instance.quests[data.questId];
+                player.questStatus = data.questStatus;
+                QuestManager.instance.Refresh();
+            }
+
+            Debug.Log("게임 불러오기 완료");
+        }
+
+        else
+        {
+            Debug.LogError("세이브 파일이 없습니다");
+        }
+    }
+
+    void OnEnable() 
+    {
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
+    
+    void OnDisable() 
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-        // 아이템 설명창 비활성화
-        if (itemDesc.activeInHierarchy) {
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode) 
+    {
+        if (itemDesc.activeInHierarchy) // 아이템 설명창 비활성화
+        {
             itemDesc.SetActive(false);
         }
         slots = inventory.gameObject.GetComponentsInChildren<Slot>();
@@ -168,7 +270,8 @@ public class GameManager : MonoBehaviour
         questTrans.anchoredPosition = new Vector2(2000f, 1500f);
 
         // 상점창 비활성화
-        for (int i = 0; i < shopList.Length; i++) {
+        for (int i = 0; i < shopList.Length; i++) 
+        {
             Image[] itemImage = shopList[i].GetComponentsInChildren<Image>();
             Text itemName = shopList[i].GetComponentInChildren<Text>();
 
@@ -180,14 +283,16 @@ public class GameManager : MonoBehaviour
         // 판매창 비활성화
         Inventory inven = inventory.gameObject.GetComponent<Inventory>();
         int sellIndex = 0;
-        for (; sellIndex < inven.items.Count; sellIndex++) {
+        for (; sellIndex < inven.items.Count; sellIndex++) 
+        {
             Image[] itemImage = sellList[sellIndex].GetComponentsInChildren<Image>();
             Text itemName = sellList[sellIndex].GetComponentInChildren<Text>();
-
             itemImage[1].sprite = inven.items[sellIndex].itemImage;
             itemName.text = inven.items[sellIndex].itemName + "  가격: " + inven.items[sellIndex].price * 0.8 + "골드";
         }
-        for (; sellIndex < sellList.Length; sellIndex++) {
+
+        for (; sellIndex < sellList.Length; sellIndex++) 
+        {
             sellList[sellIndex].SetActive(false);
         }
         RectTransform sellTrans = sellPanel.GetComponent<RectTransform>();
@@ -195,26 +300,29 @@ public class GameManager : MonoBehaviour
 
         // 업그레이드창 비활성화
         int upgradeIndex = 0;
-        for (; upgradeIndex < inven.items.Count; upgradeIndex++) {
+        for (; upgradeIndex < inven.items.Count; upgradeIndex++) 
+        {
             Image[] itemImage = upgradeList[upgradeIndex].GetComponentsInChildren<Image>();
             Text itemName = upgradeList[upgradeIndex].GetComponentInChildren<Text>();
 
             itemImage[1].sprite = inven.items[upgradeIndex].itemImage;
             itemName.text = inven.items[upgradeIndex].itemName + "  비용: " + inven.items[upgradeIndex].price * 0.1 + "골드";
         }
-        for (; upgradeIndex < upgradeList.Length; upgradeIndex++) {
+
+        for (; upgradeIndex < upgradeList.Length; upgradeIndex++) 
+        {
             upgradeList[upgradeIndex].SetActive(false);
         }
         RectTransform upgradeTrans = upgradePanel.GetComponent<RectTransform>();
         upgradeTrans.anchoredPosition = new Vector2(0f, 1500f);
 
-        // 구매선택창 비활성화
-        if (selectPanel.activeInHierarchy) {
+        if (selectPanel.activeInHierarchy) // 구매선택창 비활성화
+        {
             selectPanel.SetActive(false);
         }
 
-        // 판매선택창 비활성화
-        if (selectPanel2.activeInHierarchy) {
+        if (selectPanel2.activeInHierarchy) // 판매선택창 비활성화
+        {
             selectPanel2.SetActive(false);
         }
 
@@ -225,49 +333,60 @@ public class GameManager : MonoBehaviour
         minimap.SetActive(false);
     }
 
-    public bool GetInventoryShow() {
+    public bool GetInventoryShow() 
+    {
         return inventoryShow;
     }
 
-    public void SetInventoryShow(bool inventoryShow) {
+    public void SetInventoryShow(bool inventoryShow) 
+    {
         this.inventoryShow = inventoryShow;
     }
 
-    public void ShowInventory() {
+    public void ShowInventory() 
+    {
         RectTransform trans = inventory.gameObject.GetComponent<RectTransform>();
         trans.anchoredPosition = new Vector2(0f, 0f);
         isAction = true;
     }
 
-    public void HideInventory() {
+    public void HideInventory() 
+    {
         RectTransform trans = inventory.gameObject.GetComponent<RectTransform>();
         trans.anchoredPosition = new Vector2(2000f, 0f);
         isAction = false;
     }
 
-    public Transform GetInventory() {
+    public Transform GetInventory() 
+    {
         return inventory;
     }
 
-    public ItemBar GetItemBar() {
+    public ItemBar GetItemBar() 
+    {
         return itemBar;
     }
 
-    public void ShowQuest() {
+    public void ShowQuest() 
+    {
         RectTransform questTrans = questPanel.GetComponent<RectTransform>();
         questTrans.anchoredPosition = new Vector2(0f, 0f);
         isAction = true;
     }
 
-    public void HideQuest() {
+    public void HideQuest() 
+    {
         RectTransform questTrans = questPanel.GetComponent<RectTransform>();
         questTrans.anchoredPosition = new Vector2(2000f, 1500f);
         isAction = false;
     }
 
-    public void ShowDesc(int id) {
+    public void ShowDesc(int id) 
+    {
         Image[] childSprite = slots[id].gameObject.GetComponentsInChildren<Image>();
-        if (childSprite[1].sprite != null && !itemDesc.activeInHierarchy) {
+
+        if (childSprite[1].sprite != null && !itemDesc.activeInHierarchy) 
+        {
             // 스케일러에 맞게 해상도 설정 -> x: 1920 y: 1080
             float wRatio = Screen.width / scaler.referenceResolution.x;
             float hRatio = Screen.height / scaler.referenceResolution.y;
@@ -292,107 +411,126 @@ public class GameManager : MonoBehaviour
             ref bool R = ref rightTruncated;
             ref bool B = ref bottomTruncated;
 
-            if (R && !B) { // 오른쪽이 잘림 -> 슬롯의 좌하단에 표시
+            if (R && !B) // 오른쪽이 잘림 -> 슬롯의 좌하단에 표시
+            {
                 rt.position = new Vector2(pos.x - width - slotWidth + 10f, pos.y);
             }
-            else if (!R && B) { // 아래쪽이 잘림 -> 슬롯의 우상단에 표시
+
+            else if (!R && B) // 아래쪽이 잘림 -> 슬롯의 우상단에 표시
+            { 
                 rt.position = new Vector2(pos.x, pos.y + height + slotHeight - 10f);
             }
-            else if (R && B) { // 둘 다 잘림 -> 슬롯의 좌상단에 표시
+
+            else if (R && B) // 둘 다 잘림 -> 슬롯의 좌상단에 표시
+            { 
                 rt.position = new Vector2(pos.x - width - slotWidth + 10f, pos.y + height + slotHeight - 10f);
             }
 
             Text itemName = itemDesc.transform.GetChild(0).gameObject.GetComponent<Text>();
             itemName.text = slots[id].item.itemName;
-            // itemName.text = slots[id].item.itemName + " (+" + slots[id].item.rank + ")";
             Image itemSprite = itemDesc.transform.GetChild(1).gameObject.GetComponent<Image>();
             itemSprite.sprite = slots[id].item.itemImage;
             Text itemDescription = itemDesc.transform.GetChild(2).gameObject.GetComponent<Text>();
             itemDescription.text = slots[id].item.itemDesc;
-
             itemDesc.SetActive(true);
             Debug.Log(id + "번 설명창이 켜짐");
         }
     }
 
-    public void HideDesc() {
-        if (itemDesc.activeInHierarchy) {
+    public void HideDesc() 
+    {
+        if (itemDesc.activeInHierarchy) 
+        {
             itemDesc.SetActive(false);
             Debug.Log("설명창이 꺼짐");
         }
     }
 
-    public void ShowShop() {
+    public void ShowShop() 
+    {
         shopPanel.SetActive(true);
     }
 
-    public void HideShop() {
+    public void HideShop() 
+    {
         shopPanel.SetActive(false);
     }
 
-    public void ShowSell() {
+    public void ShowSell() 
+    {
         RectTransform sellTrans = sellPanel.GetComponent<RectTransform>();
         sellTrans.anchoredPosition = new Vector2(0f, 0f);
     }
 
-    public void HideSell() {
+    public void HideSell() 
+    {
         RectTransform sellTrans = sellPanel.GetComponent<RectTransform>();
         sellTrans.anchoredPosition = new Vector2(-2000f, 0f);
     }
 
-    public void ShowUpagrde() {
+    public void ShowUpagrde() 
+    {
         RectTransform upgradeTrans = upgradePanel.GetComponent<RectTransform>();
         upgradeTrans.anchoredPosition = new Vector2(0f, 0f);
     }
 
-    public void HideUpgrade() {
+    public void HideUpgrade() 
+    {
         RectTransform upgradeTrans = upgradePanel.GetComponent<RectTransform>();
         upgradeTrans.anchoredPosition = new Vector2(0f, 1500f);
     }
 
-    public void ShowSelect() {
+    public void ShowSelect() 
+    {
         selectPanel.SetActive(true);
     }
 
-    public void HideSelect() {
+    public void HideSelect() 
+    {
         selectPanel.SetActive(false);
     }
 
-    public void ShowSelect2() {
+    public void ShowSelect2() 
+    {
         selectPanel2.SetActive(true);
     }
 
-    public void HideSelect2() {
+    public void HideSelect2() 
+    {
         selectPanel2.SetActive(false);
     }
 
-    public void ShowSelect3() {
+    public void ShowSelect3() 
+    {
         selectPanel3.SetActive(true);
     }
 
-    public void HideSelect3() {
+    public void HideSelect3() 
+    {
         selectPanel3.SetActive(false);
     }
 
-    public void BuyItem() {
+    public void BuyItem() 
+    {
         Inventory inven = inventory.gameObject.GetComponent<Inventory>();
-        if (inven.gold >= item[itemId].price) {
+        if (inven.gold >= item[itemId].price) 
+        {
             inven.UseGold(item[itemId].price);
             inven.AddItem(item[itemId]);
             itemBar.RefreshSlot();
             RefreshSell();
             HideSelect();
-            for (int i = 0; i < player.quests.Count; i++) {
-                player.questStatus[i] = QuestManager.instance.CheckClear(player.quests[i].questId);
-            }
         }
-        else {
+
+        else 
+        {
             Debug.Log("돈이 부족합니다");
             HideSelect();
         }
     }
 
-    public void SellItem() {
+    public void SellItem() 
+    {
         Inventory inven = inventory.gameObject.GetComponent<Inventory>();
         inven.AddGold((int)(item[itemId].price * 0.8));
         inven.RemoveItem(itemId);
@@ -401,86 +539,251 @@ public class GameManager : MonoBehaviour
         HideSelect2();
     }
 
-    public void Upgrade() {
+    public void Upgrade() 
+    {
         Inventory inven = inventory.gameObject.GetComponent<Inventory>();
-        if (inven.gold >= (int)(item[itemId].price * 0.1)) {
+        if (inven.gold >= (int)(item[itemId].price * 0.1)) 
+        {
             inven.UseGold((int)(item[itemId].price * 0.1));
             inven.UpgradeItem(itemId);
             itemBar.RefreshSlot();
             RefreshUpgrade();
             HideSelect3();
         }
-        else {
+
+        else 
+        {
             Debug.Log("돈이 부족합니다");
             HideSelect3();
         }
     }
 
-    public void RefreshSell() {
+    public void RefreshSell() 
+    {
         Inventory inven = inventory.gameObject.GetComponent<Inventory>();
-        for (int i = 0; i < sellList.Length; i++) {
+
+        for (int i = 0; i < sellList.Length; i++) 
+        {
             sellList[i].SetActive(true);
         }
+
         int sellIndex = 0;
-        for (; sellIndex < inven.items.Count; sellIndex++) {
+        for (; sellIndex < inven.items.Count; sellIndex++) 
+        {
             Image[] itemImage = sellList[sellIndex].GetComponentsInChildren<Image>();
             Text itemName = sellList[sellIndex].GetComponentInChildren<Text>();
 
             itemImage[1].sprite = inven.items[sellIndex].itemImage;
             itemName.text = inven.items[sellIndex].itemName + "  가격: " + inven.items[sellIndex].price * 0.8 + "골드";
         }
-        for (; sellIndex < sellList.Length; sellIndex++) {
+
+        for (; sellIndex < sellList.Length; sellIndex++) 
+        {
             sellList[sellIndex].SetActive(false);
         }
     }
 
-    public void RefreshUpgrade() {
+    public void RefreshUpgrade() 
+    {
         Inventory inven = inventory.gameObject.GetComponent<Inventory>();
-        for (int i = 0; i < upgradeList.Length; i++) {
+
+        for (int i = 0; i < upgradeList.Length; i++) 
+        {
             upgradeList[i].SetActive(true);
         }
+
         int upgradeIndex = 0;
-        for (; upgradeIndex < inven.items.Count; upgradeIndex++) {
+        for (; upgradeIndex < inven.items.Count; upgradeIndex++) 
+        {
             Image[] itemImage = upgradeList[upgradeIndex].GetComponentsInChildren<Image>();
             Text itemName = upgradeList[upgradeIndex].GetComponentInChildren<Text>();
 
             itemImage[1].sprite = inven.items[upgradeIndex].itemImage;
             itemName.text = inven.items[upgradeIndex].itemName + "  비용: " + inven.items[upgradeIndex].price * 0.1 + "골드";
         }
-        for (; upgradeIndex < upgradeList.Length; upgradeIndex++) {
+
+        for (; upgradeIndex < upgradeList.Length; upgradeIndex++) 
+        {
             upgradeList[upgradeIndex].SetActive(false);
         }
     }
 
-    public bool GetMapShow() {
+    public bool GetMapShow() 
+    {
         return mapShow;
     }
 
-    public void SetMapShow(bool mapShow) {
+    public void SetMapShow(bool mapShow) 
+    {
         this.mapShow = mapShow;
     }
 
-    public void ShowMap() {
+    public void ShowMap() 
+    {
         minimap.SetActive(true);
         isAction = true;
     }
 
-    public void HideMap() {
+    public void HideMap() 
+    {
         minimap.SetActive(false);
         isAction = false;
     }
 
-    public void SetHP(int hp) {
-        int i = 0;
-        for (; i < hp; i++) {
-            hps[i].SetActive(true);
+    public void SetHP(int hp) 
+    {
+        if (hp <= 10) {
+            switch (hp) {
+                case 0:
+                    for (int i = 0; i < 5; i++) {
+                        hps[i].SetActive(false);
+                    }
+
+                    for (int i = 0; i < 5; i++) {
+                        halfHps[i].SetActive(false);
+                    }
+                    break;
+
+                case 1:
+                    for (int i = 0; i < 5; i++) {
+                        hps[i].SetActive(false);
+                    }
+
+                    halfHps[0].SetActive(true);
+                    for (int i = 1; i < 5; i++) {
+                        halfHps[i].SetActive(false);
+                    }
+                    break;
+
+                case 2:
+                    hps[0].SetActive(true);
+                    for (int i = 1; i < 4; i++) {
+                        hps[i].SetActive(false);
+                    }
+
+                    for (int i = 0; i < 5; i++) {
+                        halfHps[i].SetActive(false);
+                    }
+                    break;
+
+                case 3:
+                    hps[0].SetActive(true);
+                    for (int i = 1; i < 4; i++) {
+                        hps[i].SetActive(false);
+                    }
+
+                    halfHps[0].SetActive(true);
+                    halfHps[1].SetActive(true);
+                    for (int i = 2; i < 5; i++) {
+                        halfHps[i].SetActive(false);
+                    }
+                    break;
+
+                case 4:
+                    hps[0].SetActive(true);
+                    hps[1].SetActive(true);
+                    for (int i = 2; i < 4; i++) {
+                        hps[i].SetActive(false);
+                    }
+
+                    for (int i = 0; i < 5; i++) {
+                        halfHps[i].SetActive(false);
+                    }
+                    break;
+
+                case 5:
+                    hps[0].SetActive(true);
+                    hps[1].SetActive(true);
+                    for (int i = 2; i < 4; i++) {
+                        hps[i].SetActive(false);
+                    }
+
+                    halfHps[0].SetActive(true);
+                    halfHps[1].SetActive(true);
+                    halfHps[2].SetActive(true);
+                    for (int i = 3; i < 5; i++) {
+                        halfHps[i].SetActive(false);
+                    }
+                    break;
+
+                case 6:
+                    hps[0].SetActive(true);
+                    hps[1].SetActive(true);
+                    hps[2].SetActive(true);
+                    for (int i = 3; i < 5; i++) {
+                        hps[i].SetActive(false);
+                    }
+
+                    for (int i = 0; i < 5; i++) {
+                        halfHps[i].SetActive(false);
+                    }
+                    break;
+
+                case 7:
+                    hps[0].SetActive(true);
+                    hps[1].SetActive(true);
+                    hps[2].SetActive(true);
+                    for (int i = 3; i < 5; i++) {
+                        hps[i].SetActive(false);
+                    }
+
+                    halfHps[0].SetActive(true);
+                    halfHps[1].SetActive(true);
+                    halfHps[2].SetActive(true);
+                    halfHps[3].SetActive(true);
+                    for (int i = 4; i < 5; i++) {
+                        halfHps[i].SetActive(false);
+                    }
+                    break;
+
+                case 8:
+                    hps[0].SetActive(true);
+                    hps[1].SetActive(true);
+                    hps[2].SetActive(true);
+                    hps[3].SetActive(true);
+                    hps[4].SetActive(false);
+
+                    for (int i = 0; i < 5; i++) {
+                        halfHps[i].SetActive(false);
+                    }
+                    break;
+
+                case 9:
+                    hps[0].SetActive(true);
+                    hps[1].SetActive(true);
+                    hps[2].SetActive(true);
+                    hps[3].SetActive(true);
+                    hps[4].SetActive(false);
+
+                    for (int i = 0; i < halfHps.Length; i++) {
+                        halfHps[i].SetActive(true);
+                    }
+                    break;
+
+                case 10:
+                    for (int i = 0; i < hps.Length; i++) {
+                        hps[i].SetActive(true);
+                    }
+                    for (int i = 0; i < halfHps.Length; i++) {
+                        halfHps[i].SetActive(true);
+                    }
+                    break;
+            }
         }
-        for (; i < hps.Length; i++) {
-            hps[i].SetActive(false);
+
+        else {
+            for (int i = 0; i < hps.Length; i++) {
+                hps[i].SetActive(true);
+            }
+
+            for (int i = 0; i < halfHps.Length; i++) {
+                halfHps[i].SetActive(true);
+            }
         }
     }
 
-    public void Action(GameObject scanObj) {
+    public void Action(GameObject scanObj) 
+    {
         scanObject = scanObj;
         ObjData objData = scanObject.GetComponent<ObjData>();
         Talk(objData);
@@ -488,14 +791,28 @@ public class GameManager : MonoBehaviour
         talkPanel.SetBool("isShow", isAction);
     }
 
-    void Talk(ObjData data) {
+    void Talk(ObjData data) 
+    {
         string talkData = "";
 
-        if (talk.isAnim) {
+        if (talk.isAnim) 
+        {
             talk.SetMsg("");
             return;
         }
-        else {
+
+        else 
+        {
+            if (data.isNPC && data.type == ObjData.NPCType.quest) 
+            {
+                if (player.quest != null && data.id % 1000 == 0) {
+                    data.id += 1;
+                }
+                if (player.clearStatus[data.questId[0]] && data.id % 1000 == 0) {
+                    data.id += 3;
+                }
+            }
+
             if (data.isNPC && data.type == ObjData.NPCType.quest && (data.id % 1000 == 1 || data.id % 1000 == 4)) {
                 if (QuestManager.instance.CheckClear(data.questId[data.questIndex])) {
                     data.id += 1;
@@ -504,11 +821,12 @@ public class GameManager : MonoBehaviour
             talkData = TalkManager.instance.GetTalk(data.id, talkIndex);
         }
 
-        if (talkData == null) {
-            if (data.type == ObjData.NPCType.quest) {
+        if (talkData == null) 
+        {
+            if (data.type == ObjData.NPCType.quest) 
+            {
                 switch (data.id % 1000) {
                     case 0:
-                    case 3:
                         QuestManager.instance.Accept(data.questId[data.questIndex]);
                         if (QuestManager.instance.CheckClear(data.questId[data.questIndex])) {
                             data.id += 2;
@@ -516,8 +834,8 @@ public class GameManager : MonoBehaviour
                         }
                         data.id += 1;
                         break;
+
                     case 2:
-                    case 5:
                         QuestManager.instance.QuestClear(data.questId[data.questIndex]);
                         data.id += 1;
                         data.questIndex += 1;
@@ -525,6 +843,7 @@ public class GameManager : MonoBehaviour
                             data.type = ObjData.NPCType.normal;
                         }
                         break;
+
                     default:
                         break;
                 }
@@ -540,10 +859,12 @@ public class GameManager : MonoBehaviour
                     shopButtons.SetActive(true);
                     upgradeButton.SetActive(false);
                     break;
+
                 case ObjData.NPCType.blacksmith:
                     shopButtons.SetActive(false);
                     upgradeButton.SetActive(true);
                     break;
+                    
                 case ObjData.NPCType.quest:
                 case ObjData.NPCType.normal:
                     shopButtons.SetActive(false);

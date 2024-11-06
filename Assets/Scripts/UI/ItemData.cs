@@ -6,17 +6,20 @@ public class ItemData : MonoBehaviour
 {
     public int id;
 
-    public void OnClick() {
+    public void OnClick() 
+    {
         GameManager.instance.itemId = id;
         GameManager.instance.ShowSelect();
     }
 
-    public void OnClick2() {
+    public void OnClick2() 
+    {
         GameManager.instance.itemId = id;
         GameManager.instance.ShowSelect2();
     }
 
-    public void OnClick3() {
+    public void OnClick3() 
+    {
         GameManager.instance.itemId = id;
         GameManager.instance.ShowSelect3();
     }

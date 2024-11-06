@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Potion
   m_EditorClassIdentifier: 
   itemName: "\uBB3C\uC57D"
+  type: 1
   itemDesc: "\uCCB4\uB825\uC744 \uCC44\uC6CC\uC8FC\uB294 \uD3EC\uC158\uC774\uB2E4."
   rank: 0
   price: 2300

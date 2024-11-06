@@ -11,23 +11,33 @@ public class Monster : MonoBehaviour
     [SerializeField] int nextXMove;
     [SerializeField] int nextYMove;
     [SerializeField] float range;
+    [SerializeField] bool isHit;
     Rigidbody2D rigid;
     Animator anim;
+    SpriteRenderer spriteRenderer;
     [SerializeField] GameObject target;
 
-    void Awake() {
+    void Awake() 
+    {
         rigid = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         target = GameManager.instance.player.gameObject;
         Invoke("Think", 2);
     }
 
-    void Update() {
-        range = Vector2.Distance(target.transform.position, transform.position);
+    void Update() 
+    {
+        if (!isHit) 
+        {
+            range = Vector2.Distance(target.transform.position, transform.position);
+        }
     }
 
-    void FixedUpdate() {
-        if (range <= 7) {
+    void FixedUpdate() 
+    {
+        if (range <= 7) 
+        {
             anim.SetBool("Walking", true);
 
             Vector2 targetPos = target.transform.position;
@@ -41,31 +51,68 @@ public class Monster : MonoBehaviour
             anim.SetFloat("DirY", dir.y);
             transform.position = pos;
         }
-        else {
-            if (nextXMove == 0 && nextYMove == 0) {
+
+        else 
+        {
+            if (nextXMove == 0 && nextYMove == 0) 
+            {
                 anim.SetBool("Walking", false);
             }
-            else {
+
+            else 
+            {
                 anim.SetBool("Walking", true);
             }
+
             anim.SetFloat("DirX", nextXMove);
             anim.SetFloat("DirY", nextYMove);
-
             rigid.velocity = new Vector2(nextXMove, nextYMove);
         }
     }
 
-    void Think() {
+    void Think() 
+    {
         nextXMove = Random.Range(-1, 2);
         nextYMove = Random.Range(-1, 2);
-
         Invoke("Stop", 2);
     }
 
-    void Stop() {
+    void Stop() 
+    {
         nextXMove = 0;
         nextYMove = 0;
-
         Invoke("Think", 2);
+    }
+
+    public void GotDamage(int damage) 
+    {
+        isHit = true;
+        spriteRenderer.color = new Color(1, 1, 1, 0.4f);
+        CancelInvoke();
+        nextXMove = 0;
+        nextYMove = 0;
+        range = 100;
+
+        hp -= damage;
+        if (hp <= 0) 
+        {
+            spriteRenderer.color = new Color(1, 1, 1, 1);
+            anim.SetBool("isDead", true);
+            Die();
+        }
+        Invoke("OffInvincible", 3);
+    }
+
+    void OffInvincible() 
+    {
+        spriteRenderer.color = new Color(1, 1, 1, 1);
+        isHit = false;
+        Invoke("Think", 2);
+    }
+
+    public void Die() 
+    {
+        Debug.Log("Enemy is Dead");
+        gameObject.SetActive(false);
     }
 }

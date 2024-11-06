@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Candy
   m_EditorClassIdentifier: 
   itemName: "\uC0AC\uD0D5"
+  type: 1
   itemDesc: "\uC544\uC774\uB4E4\uC774 \uC88B\uC544\uD558\uB294 \uC0AC\uD0D5\uC774\uB2E4."
   rank: 0
   price: 900

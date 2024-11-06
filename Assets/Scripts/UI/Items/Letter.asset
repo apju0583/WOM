@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Letter
   m_EditorClassIdentifier: 
   itemName: "\uD3B8\uC9C0"
+  type: 2
   itemDesc: "\uD560\uC544\uBC84\uC9C0\uAC00 \uBCF4\uB0B8 \uD3B8\uC9C0\uC774\uB2E4."
   rank: 0
   price: 1700

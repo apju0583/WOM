@@ -15,24 +15,30 @@ public class TypeEffect : MonoBehaviour
     public GameObject endCursor;
     AudioSource audioSource;
 
-    void Awake() {
+    void Awake() 
+    {
         msgText = GetComponent<Text>();
         audioSource = GetComponent<AudioSource>();
     }
 
-    public void SetMsg(string msg) {
-        if (isAnim) {
+    public void SetMsg(string msg) 
+    {
+        if (isAnim) 
+        {
             msgText.text = targetMsg;
             CancelInvoke();
             EffectEnd();
         }
-        else {
+
+        else 
+        {
             targetMsg = msg;
             EffectStart();
         }
     }
 
-    void EffectStart() {
+    void EffectStart() 
+    {
         msgText.text = "";
         index = 0;
         endCursor.SetActive(false);
@@ -42,22 +48,21 @@ public class TypeEffect : MonoBehaviour
         Invoke("Effecting", interval);
     }
 
-    void Effecting() {
-        if (msgText.text == targetMsg) {
+    void Effecting() 
+    {
+        if (msgText.text == targetMsg) 
+        {
             EffectEnd();
             return;
         }
 
         msgText.text += targetMsg[index];
-        // if (targetMsg[index] != ' ' || targetMsg[index] != '.') {
-        //     audioSource.Play();
-        // }
         index += 1;
-
         Invoke("Effecting", interval);
     }
 
-    void EffectEnd() {
+    void EffectEnd() 
+    {
         isAnim = false;
         endCursor.SetActive(true);
     }

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Ball
   m_EditorClassIdentifier: 
   itemName: "\uAD6C\uC2AC"
+  type: 2
   itemDesc: "\uBAAC\uC2A4\uD130\uAC00 \uB5A8\uC5B4\uB728\uB9B0 \uAD6C\uC2AC\uC774\uB2E4."
   rank: 0
   price: 300

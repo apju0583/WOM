@@ -11,19 +11,23 @@ public class StartManager : MonoBehaviour
     public Text flashText;
     public GameObject buttons;
 
-    void Awake() {
+    void Awake() 
+    {
         logo.SetActive(true);
         startText.SetActive(true);
         buttons.SetActive(false);
         flashText = startText.GetComponentInChildren<Text>();
     }
 
-    void Start() {
+    void Start() 
+    {
         StartCoroutine(BlinkText());
     }
 
-    void Update() {
-        if (Input.anyKeyDown) {
+    void Update() 
+    {
+        if (Input.anyKeyDown) 
+        {
             StopCoroutine(BlinkText());
             logo.SetActive(false);
             startText.SetActive(false);
@@ -31,11 +35,13 @@ public class StartManager : MonoBehaviour
         }
     }
 
-    public void ChangeScene() {
+    public void ChangeScene()
+    {
         SceneManager.LoadScene("Village");
     }
 
-    public void ExitGame() {
+    public void ExitGame() 
+    {
         #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
         #else
@@ -43,8 +49,10 @@ public class StartManager : MonoBehaviour
         #endif
     }
 
-    IEnumerator BlinkText() {
-        while (true) {
+    IEnumerator BlinkText() 
+    {
+        while (true) 
+        {
             string text = flashText.text;
             flashText.text = "";
             yield return new WaitForSeconds(0.5f);

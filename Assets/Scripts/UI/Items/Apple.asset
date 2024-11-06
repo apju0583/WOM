@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Apple
   m_EditorClassIdentifier: 
   itemName: "\uC0AC\uACFC"
+  type: 1
   itemDesc: "\uC2F1\uC2F1\uD55C \uC0AC\uACFC\uC774\uB2E4."
   rank: 0
   price: 100

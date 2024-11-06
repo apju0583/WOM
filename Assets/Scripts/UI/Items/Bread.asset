@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Bread
   m_EditorClassIdentifier: 
   itemName: "\uBE75"
+  type: 1
   itemDesc: "\uC9D1\uC5D0\uC11C \uAD6C\uC6B4 \uBE75\uC774\uB2E4."
   rank: 0
   price: 800

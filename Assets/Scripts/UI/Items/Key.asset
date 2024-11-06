@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Key
   m_EditorClassIdentifier: 
   itemName: "\uC5F4\uC1E0"
+  type: 2
   itemDesc: "\uBB34\uC5B8\uAC00\uB97C \uC5F4 \uC218 \uC788\uB294 \uC5F4\uC1E0\uC774\uB2E4."
   rank: 0
   price: 1600

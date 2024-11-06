@@ -21,7 +21,7 @@ public class DoorScript : MonoBehaviour
 
     void Update()
     {
-        if (isPlayerInRange && Input.GetKeyDown(KeyCode.E))
+        if (isPlayerInRange && Input.GetKeyDown(KeyCode.E)) //상점 문에 상호작용 시
         {
             if (audioSource != null)
             {

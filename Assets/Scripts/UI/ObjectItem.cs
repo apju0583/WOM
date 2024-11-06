@@ -7,11 +7,13 @@ public class ObjectItem : MonoBehaviour, IObjectItem
     [Header("# 아이템")]
     public Item item;
 
-    public Item ClickItem() {
+    public Item ClickItem() 
+    {
         return this.item;
     }
 
-    public void OnClick() {
+    public void OnClick() 
+    {
         Inventory inventory = GameManager.instance.GetInventory().gameObject.GetComponent<Inventory>();
         
         inventory.AddItem(this.item);

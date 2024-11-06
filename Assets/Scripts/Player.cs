@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    static public Player instance;
+    public static Player instance;
 
     public string currentMapName;
     public string currentStartPointID;
@@ -18,10 +18,11 @@ public class Player : MonoBehaviour
 
     public LayerMask noPassLayer;
     private Animator animator;
-    SpriteRenderer spriteRenderer;
+    private SpriteRenderer spriteRenderer;
 
-    public List<Quest> quests;
-    public List<bool> questStatus;
+    public Quest quest;
+    public bool questStatus;
+    public Dictionary<int, bool> clearStatus = new Dictionary<int, bool>();
 
     public float attackCooldown = 0.5f;
     private float nextAttackTime = 0f;
@@ -31,23 +32,31 @@ public class Player : MonoBehaviour
     public LayerMask enemyLayers;
 
     public int hp = 10;
-    WaitForFixedUpdate wait;
+    private WaitForFixedUpdate wait = new WaitForFixedUpdate();
+    public Inventory inventory;
 
-    private void Start()
+    private void Awake()
     {
-        animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-
         if (instance == null)
         {
-            DontDestroyOnLoad(this.gameObject);
-            rigid = GetComponent<Rigidbody2D>();
             instance = this;
+            DontDestroyOnLoad(gameObject);
         }
 
         else
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
+            return;
+        }
+
+        rigid = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        inventory = GameObject.Find("Canvas/Inventory").GetComponent<Inventory>();
+        
+        if (inventory == null)
+        {
+            Debug.LogError("No Inventory");
         }
     }
 
@@ -72,39 +81,40 @@ public class Player : MonoBehaviour
             animator.SetFloat("DirY", lastMoveInput.y);
         }
 
-        if (Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime && !animator.GetBool("IsAttacking")) {
+        if (Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime && !animator.GetBool("IsAttacking")) //공격
+        {
             Attack();
             nextAttackTime = Time.time + attackCooldown;
         }
 
-        if (Input.GetButtonDown("Jump") && scanObject != null) {
+        if (Input.GetButtonDown("Jump") && scanObject != null)
+        {
             GameManager.instance.Action(scanObject);
         }
 
-        // 퀘스트 창
-        if (Input.GetKeyDown(KeyCode.J)) 
+        if (Input.GetKeyDown(KeyCode.J)) //퀘스트 창
         {
-            if (!GameManager.instance.isAction) 
+            if (!GameManager.instance.isAction)
             {
                 GameManager.instance.ShowQuest();
             }
 
-            else 
+            else
             {
                 GameManager.instance.HideQuest();
             }
         }
 
         // 인벤토리 창
-        if (Input.GetKeyDown(KeyCode.I)) 
+        if (Input.GetKeyDown(KeyCode.I))
         {
-            if (GameManager.instance.GetInventoryShow()) 
+            if (GameManager.instance.GetInventoryShow())
             {
                 GameManager.instance.SetInventoryShow(false);
                 GameManager.instance.HideInventory();
             }
 
-            else 
+            else
             {
                 GameManager.instance.SetInventoryShow(true);
                 GameManager.instance.ShowInventory();
@@ -112,15 +122,15 @@ public class Player : MonoBehaviour
         }
 
         // 지도 창
-        if (Input.GetKeyDown(KeyCode.M)) 
+        if (Input.GetKeyDown(KeyCode.M))
         {
-            if (GameManager.instance.GetMapShow()) 
+            if (GameManager.instance.GetMapShow())
             {
                 GameManager.instance.SetMapShow(false);
                 GameManager.instance.HideMap();
             }
 
-            else 
+            else
             {
                 GameManager.instance.SetMapShow(true);
                 GameManager.instance.ShowMap();
@@ -133,23 +143,13 @@ public class Player : MonoBehaviour
         Vector2 targetPosition = rigid.position + moveVelocity * Time.fixedDeltaTime;
 
         RaycastHit2D hit = Physics2D.Raycast(rigid.position, moveVelocity.normalized, moveVelocity.magnitude * Time.fixedDeltaTime, noPassLayer);
-
         if (hit.collider == null)
         {
             rigid.MovePosition(targetPosition);
         }
 
         RaycastHit2D npcHit = Physics2D.Raycast(rigid.position, lastMoveInput.normalized, 10f, LayerMask.GetMask("Object"));
-        
-        if (npcHit.collider != null) 
-        {
-            scanObject = npcHit.collider.gameObject;
-        } 
-        
-        else 
-        {
-            scanObject = null;
-        }
+        scanObject = npcHit.collider != null ? npcHit.collider.gameObject : null;
     }
 
     private void Attack()
@@ -160,55 +160,66 @@ public class Player : MonoBehaviour
         foreach (Collider2D enemy in hitEnemies)
         {
             Debug.Log("Hit enemy: " + enemy.gameObject.name);
+            Monster monster = enemy.gameObject.GetComponent<Monster>();
+            if (monster != null)
+            {
+                monster.GotDamage(attackDamage);
+            }
         }
-
-        // foreach (Collider2D enemy in hitEnemies)
-        // {
-        //     enemy.GetComponent<Enemy>().TakeDamage(attackDamage);
-        // }
     }
 
-    public void ResetAttack() {
+    public void ResetAttack()
+    {
         animator.SetBool("IsAttacking", false);
     }
 
-    private void OnDrawGizmosSelected() {
+    private void OnDrawGizmosSelected()
+    {
         if (attackPoint == null)
             return;
 
         Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
 
-    void OnCollisionEnter2D(Collision2D other) {
-        if (other.gameObject.CompareTag("Monster")) {
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Monster"))
+        {
             GotDamage(other.gameObject);
             GameManager.instance.SetHP(hp);
         }
     }
 
-    public void GotDamage(GameObject enemy) {
+    public void GotDamage(GameObject enemy)
+    {
         gameObject.layer = 10;
         spriteRenderer.color = new Color(1, 1, 1, 0.4f);
 
         Monster monster = enemy.GetComponent<Monster>();
-        hp -= monster.damage;
-        StartCoroutine(KnockBack(enemy));
-
+        if (monster != null)
+        {
+            hp -= monster.damage;
+            StartCoroutine(KnockBack(enemy));
+        }
+        
         Invoke("OffInvincible", 3);
     }
 
-    IEnumerator KnockBack(GameObject enemy) {
+    private IEnumerator KnockBack(GameObject enemy)
+    {
         yield return wait;
         Vector2 dir = transform.position - enemy.transform.position;
         rigid.AddForce(dir.normalized * 10, ForceMode2D.Impulse);
     }
 
-    public void OffInvincible() {
-        gameObject.layer= 9;
+    public void OffInvincible()
+    {
+        gameObject.layer = 9;
         spriteRenderer.color = new Color(1, 1, 1, 1);
     }
 
-    public void RestoreHP(int hp) {
+    public void RestoreHP(int hp)
+    {
         this.hp += hp;
     }
 }

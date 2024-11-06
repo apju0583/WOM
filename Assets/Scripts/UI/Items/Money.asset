@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Money
   m_EditorClassIdentifier: 
   itemName: "\uB3C8\uBB49\uCE58"
+  type: 2
   itemDesc: "\uB204\uAD70\uAC00 \uB5A8\uC5B4\uB728\uB9B0 \uB3C8\uBB49\uCE58\uC774\uB2E4."
   rank: 0
   price: 1900

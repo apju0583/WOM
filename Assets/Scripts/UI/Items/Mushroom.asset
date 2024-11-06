@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Mushroom
   m_EditorClassIdentifier: 
   itemName: "\uBC84\uC12F"
+  type: 1
   itemDesc: "\uC0B0\uC5D0\uC11C \uCE90\uC628 \uBC84\uC12F\uC774\uB2E4."
   rank: 0
   price: 2000

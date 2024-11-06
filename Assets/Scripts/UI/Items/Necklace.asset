@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Necklace
   m_EditorClassIdentifier: 
   itemName: "\uBAA9\uAC78\uC774"
+  type: 2
   itemDesc: "\uC120\uBB3C\uB85C \uBC1B\uC740 \uBAA9\uAC78\uC774\uC774\uB2E4."
   rank: 0
   price: 2100

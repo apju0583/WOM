@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Paper
   m_EditorClassIdentifier: 
   itemName: "\uC758\uB8B0\uC11C"
+  type: 2
   itemDesc: "\uC758\uB8B0 \uB0B4\uC6A9\uC774 \uC801\uD600\uC788\uB294 \uC885\uC774\uC774\uB2E4."
   rank: 0
   price: 2200

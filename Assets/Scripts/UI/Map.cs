@@ -7,11 +7,13 @@ public class Map : MonoBehaviour
 {
     [SerializeField] Animator[] areaAnims;
 
-    public void Init() {
+    public void Init() 
+    {
         areaAnims = GetComponentsInChildren<Animator>();
     }
 
-    void OnEnable() {
+    void OnEnable() 
+    {
         Scene scene = SceneManager.GetActiveScene();
 
         switch (scene.name) {
@@ -30,6 +32,7 @@ public class Map : MonoBehaviour
                     }
                 }
                 break;
+
             case "Lower Mountain 1":
             case "Mountain_Bot1":
                 for (int i = 0; i < areaAnims.Length; i++) {
@@ -41,6 +44,7 @@ public class Map : MonoBehaviour
                     }
                 }
                 break;
+
             case "Way Home":
             case "Mountain_Way_To_House":
                 for (int i = 0; i < areaAnims.Length; i++) {
@@ -52,6 +56,7 @@ public class Map : MonoBehaviour
                     }
                 }
                 break;
+
             case "Home":
             case "Mountain_BotHouse":
                 for (int i = 0; i < areaAnims.Length; i++) {
@@ -63,6 +68,7 @@ public class Map : MonoBehaviour
                     }
                 }
                 break;
+
             case "Lower Mountain 2":
             case "Mountain_Bot2":
                 for (int i = 0; i < areaAnims.Length; i++) {
@@ -74,6 +80,7 @@ public class Map : MonoBehaviour
                     }
                 }
                 break;
+
             case "Center Mountain 1":
             case "Mountain_Mid1":
                 for (int i = 0; i < areaAnims.Length; i++) {
@@ -85,6 +92,7 @@ public class Map : MonoBehaviour
                     }
                 }
                 break;
+
             case "Way Lake":
             case "Mountain_Way_To_Lake":
                 for (int i = 0; i < areaAnims.Length; i++) {
@@ -96,6 +104,7 @@ public class Map : MonoBehaviour
                     }
                 }
                 break;
+
             case "Lake":
             case "Mountain_MidLake":
                 for (int i = 0; i < areaAnims.Length; i++) {
@@ -107,6 +116,7 @@ public class Map : MonoBehaviour
                     }
                 }
                 break;
+
             case "Mushroom Cave":
             case "Mountain_Mushroom_Cave":
                 for (int i = 0; i < areaAnims.Length; i++) {
@@ -118,6 +128,7 @@ public class Map : MonoBehaviour
                     }
                 }
                 break;
+
             case "Center Mountain 2":
             case "Mountain_Mid2":
                 for (int i = 0; i < areaAnims.Length; i++) {
@@ -129,6 +140,7 @@ public class Map : MonoBehaviour
                     }
                 }
                 break;
+
             case "Out of Light":
                 for (int i = 0; i < areaAnims.Length; i++) {
                     if (i == 10) {
@@ -139,6 +151,7 @@ public class Map : MonoBehaviour
                     }
                 }
                 break;
+
             case "Top of Mountain":
             case "Mountain_Top":
                 for (int i = 0; i < areaAnims.Length; i++) {
@@ -150,6 +163,7 @@ public class Map : MonoBehaviour
                     }
                 }
                 break;
+
             case "Dungeon":
                 for (int i = 0; i < areaAnims.Length; i++) {
                     if (i == 12) {
@@ -160,6 +174,7 @@ public class Map : MonoBehaviour
                     }
                 }
                 break;
+
             default:
                 for (int i = 0; i < areaAnims.Length; i++) {
                     areaAnims[i].SetBool("isLocate", false);

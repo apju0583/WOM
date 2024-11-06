@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Ring
   m_EditorClassIdentifier: 
   itemName: "\uBC18\uC9C0"
+  type: 2
   itemDesc: "\uB204\uAD70\uAC00\uAC00 \uB5A8\uC5B4\uB728\uB9B0 \uBC18\uC9C0\uC774\uB2E4."
   rank: 0
   price: 2400

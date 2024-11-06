@@ -10,16 +10,20 @@ public class Slot : MonoBehaviour
     public int id;
 
     private Item _item;
-    public Item item {
+    public Item item 
+    {
         get { return _item; }
         set {
             _item = value;
 
-            if (_item != null) {
+            if (_item != null) 
+            {
                 image.sprite = item.itemImage;
                 image.color = new Color(1, 1, 1, 1);
             }
-            else {
+
+            else 
+            {
                 image.sprite = null;
                 image.color = new Color(1, 1, 1, 0);
             }

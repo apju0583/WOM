@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Cherry
   m_EditorClassIdentifier: 
   itemName: "\uCCB4\uB9AC"
+  type: 1
   itemDesc: "\uB9C8\uC744\uC5D0\uC11C \uD0A4\uC6B4 \uCCB4\uB9AC\uC774\uB2E4."
   rank: 0
   price: 1000

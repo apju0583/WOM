@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Banana
   m_EditorClassIdentifier: 
   itemName: "\uBC14\uB098\uB098"
+  type: 1
   itemDesc: "\uB9C8\uC744\uC5D0\uC11C \uD0A4\uC6B4 \uBC14\uB098\uB098\uC774\uB2E4."
   rank: 0
   price: 400
