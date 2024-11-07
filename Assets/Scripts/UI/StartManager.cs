@@ -10,6 +10,7 @@ public class StartManager : MonoBehaviour
     public GameObject startText;
     public Text flashText;
     public GameObject buttons;
+    public GameObject optionPanel;
 
     void Awake() 
     {
@@ -35,7 +36,7 @@ public class StartManager : MonoBehaviour
         }
     }
 
-    public void ChangeScene()
+    public void ChangeScene() 
     {
         SceneManager.LoadScene("Village");
     }
@@ -49,10 +50,19 @@ public class StartManager : MonoBehaviour
         #endif
     }
 
+    public void ShowOption() 
+    {
+        optionPanel.SetActive(true);
+    }
+
+    public void HideOption() 
+    {
+        optionPanel.SetActive(false);
+    }
+
     IEnumerator BlinkText() 
     {
-        while (true) 
-        {
+        while (true) {
             string text = flashText.text;
             flashText.text = "";
             yield return new WaitForSeconds(0.5f);

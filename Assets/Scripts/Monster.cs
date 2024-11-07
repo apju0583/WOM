@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Monster : MonoBehaviour
 {
+    public enum MonsterType { Aggresive, Passive }
+
+    public MonsterType type;
     public int hp;
     public int speed = 5;
     public int damage = 5;
@@ -12,6 +15,7 @@ public class Monster : MonoBehaviour
     [SerializeField] int nextYMove;
     [SerializeField] float range;
     [SerializeField] bool isHit;
+    [SerializeField] bool wasHit;
     Rigidbody2D rigid;
     Animator anim;
     SpriteRenderer spriteRenderer;
@@ -36,37 +40,90 @@ public class Monster : MonoBehaviour
 
     void FixedUpdate() 
     {
-        if (range <= 7) 
+        if (type == MonsterType.Aggresive) 
         {
-            anim.SetBool("Walking", true);
-
-            Vector2 targetPos = target.transform.position;
-            Vector2 pos = transform.position;
-            Vector2 dist = targetPos - pos;
-            Vector2 dir = dist.normalized;
-        
-            pos += speed * Time.fixedDeltaTime * dir;
-
-            anim.SetFloat("DirX", dir.x);
-            anim.SetFloat("DirY", dir.y);
-            transform.position = pos;
-        }
-
-        else 
-        {
-            if (nextXMove == 0 && nextYMove == 0) 
+            if (range <= 7) 
             {
-                anim.SetBool("Walking", false);
+                anim.SetBool("Walking", true);
+
+                Vector2 targetPos = target.transform.position;
+                Vector2 pos = transform.position;
+                Vector2 dist = targetPos - pos;
+                Vector2 dir = dist.normalized;
+            
+                pos += speed * Time.fixedDeltaTime * dir;
+
+                anim.SetFloat("DirX", dir.x);
+                anim.SetFloat("DirY", dir.y);
+                transform.position = pos;
             }
 
             else 
             {
-                anim.SetBool("Walking", true);
+                if (nextXMove == 0 && nextYMove == 0) {
+                    anim.SetBool("Walking", false);
+                }
+
+                else {
+                    anim.SetBool("Walking", true);
+                }
+
+                anim.SetFloat("DirX", nextXMove);
+                anim.SetFloat("DirY", nextYMove);
+                rigid.velocity = new Vector2(nextXMove, nextYMove);
+            }
+        }
+
+        else if (type == MonsterType.Passive) 
+        {
+            if (range <= 7) 
+            {
+                if (wasHit) 
+                {
+                    anim.SetBool("Walking", true);
+
+                    Vector2 targetPos = target.transform.position;
+                    Vector2 pos = transform.position;
+                    Vector2 dist = targetPos - pos;
+                    Vector2 dir = dist.normalized;
+                
+                    pos += speed * Time.fixedDeltaTime * dir;
+
+                    anim.SetFloat("DirX", dir.x);
+                    anim.SetFloat("DirY", dir.y);
+                    transform.position = pos;
+                }
+
+                else 
+                {
+                    if (nextXMove == 0 && nextYMove == 0) {
+                        anim.SetBool("Walking", false);
+                    }
+
+                    else {
+                        anim.SetBool("Walking", true);
+                    }
+                    
+                    anim.SetFloat("DirX", nextXMove);
+                    anim.SetFloat("DirY", nextYMove);
+                    rigid.velocity = new Vector2(nextXMove, nextYMove);
+                }
             }
 
-            anim.SetFloat("DirX", nextXMove);
-            anim.SetFloat("DirY", nextYMove);
-            rigid.velocity = new Vector2(nextXMove, nextYMove);
+            else 
+            {
+                if (nextXMove == 0 && nextYMove == 0) {
+                    anim.SetBool("Walking", false);
+                }
+
+                else {
+                    anim.SetBool("Walking", true);
+                }
+
+                anim.SetFloat("DirX", nextXMove);
+                anim.SetFloat("DirY", nextYMove);
+                rigid.velocity = new Vector2(nextXMove, nextYMove);
+            }
         }
     }
 
@@ -87,6 +144,7 @@ public class Monster : MonoBehaviour
     public void GotDamage(int damage) 
     {
         isHit = true;
+        wasHit = true;
         spriteRenderer.color = new Color(1, 1, 1, 0.4f);
         CancelInvoke();
         nextXMove = 0;
@@ -94,12 +152,13 @@ public class Monster : MonoBehaviour
         range = 100;
 
         hp -= damage;
-        if (hp <= 0) 
-        {
+
+        if (hp <= 0) {
             spriteRenderer.color = new Color(1, 1, 1, 1);
             anim.SetBool("isDead", true);
             Die();
         }
+
         Invoke("OffInvincible", 3);
     }
 

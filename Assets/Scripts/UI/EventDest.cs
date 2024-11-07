@@ -5,7 +5,8 @@ using UnityEngine.EventSystems;
 
 public class EventDest : MonoBehaviour
 {
-    private void Awake() {
+    private void Awake() 
+    {
         if (FindObjectsOfType<EventSystem>().Length > 1) 
         {
             Destroy(gameObject);
