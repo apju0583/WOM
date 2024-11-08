@@ -28,7 +28,7 @@ public class Player : MonoBehaviour
     private float nextAttackTime = 0f;
     public Transform attackPoint;
     public float attackRange = 0.5f;
-    public int attackDamage = 10;
+    public int attackDamage = 1;
     public LayerMask enemyLayers;
 
     public int hp = 10;
@@ -221,5 +221,12 @@ public class Player : MonoBehaviour
     public void RestoreHP(int hp)
     {
         this.hp += hp;
+        if (this.hp > 10) {
+            this.hp = 10;
+        }
+    }
+
+    public void SetDamage(int damage) {
+        attackDamage = damage;
     }
 }

@@ -17,4 +17,5 @@ MonoBehaviour:
   itemDesc: "\uB9C8\uC744\uC5D0\uC11C \uD0A4\uC6B4 \uD3EC\uB3C4\uC774\uB2E4."
   rank: 0
   price: 1300
+  ability: 6
   itemImage: {fileID: -1001455895, guid: f057a6b35284b2b479cdab8979f9b4ae, type: 3}

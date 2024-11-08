@@ -38,7 +38,7 @@ public class StartManager : MonoBehaviour
 
     public void ChangeScene() 
     {
-        SceneManager.LoadScene("Village");
+        LoadingSceneController.Instance.LoadScene("First_Scene");
     }
 
     public void ExitGame() 

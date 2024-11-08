@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Robe
   m_EditorClassIdentifier: 
   itemName: "\uB85C\uBE0C"
+  type: 2
   itemDesc: "\uBCF4\uC628\uC5D0 \uB3C4\uC6C0\uC774 \uB418\uB294 \uB85C\uBE0C\uC774\uB2E4."
   rank: 0
   price: 2500
+  ability: 0
   itemImage: {fileID: 1005885626, guid: f057a6b35284b2b479cdab8979f9b4ae, type: 3}

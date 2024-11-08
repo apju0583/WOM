@@ -9,6 +9,7 @@ public class Inventory : MonoBehaviour
     public List<string> names;
     public List<int> itemCounts;
     public List<int> itemRank;
+    public List<int> itemAbility;
     public int gold;
 
     [SerializeField] Transform slotParent;
@@ -28,8 +29,13 @@ public class Inventory : MonoBehaviour
             names.Add(items[i].itemName);
             itemCounts.Add(1);
             itemRank.Add(items[i].rank);
+            itemAbility.Add(items[i].ability);
         }
         FreshSlot();
+    }
+
+    void Start() {
+        SetPlayerDamage();
     }
 
     public void FreshSlot() 
@@ -85,6 +91,7 @@ public class Inventory : MonoBehaviour
                 itemRank.Add(_item.rank);
                 Debug.Log("아이템이 추가되었습니다.");
                 FreshSlot();
+                SetPlayerDamage();
                 if (GameManager.instance.player.quest != null) 
                 {
                     GameManager.instance.player.questStatus = QuestManager.instance.CheckClear(GameManager.instance.player.quest.questId);
@@ -112,6 +119,7 @@ public class Inventory : MonoBehaviour
                 names.RemoveAt(index);
                 itemCounts.RemoveAt(index);
                 itemRank.RemoveAt(index);
+                SetPlayerDamage();
                 Debug.Log("아이템이 인벤토리에서 제거되었습니다");
             }
 
@@ -141,6 +149,7 @@ public class Inventory : MonoBehaviour
                 names.RemoveAt(index);
                 itemCounts.RemoveAt(index);
                 itemRank.RemoveAt(index);
+                SetPlayerDamage();
                 Debug.Log("아이템이 인벤토리에서 제거되었습니다");
             }
 
@@ -162,9 +171,11 @@ public class Inventory : MonoBehaviour
     {
         if (items.Count != 0 && items[index].type == Item.ItemType.equip) {
             itemRank[index] += 1;
+            itemAbility[index] += 1;
             items[index].itemName = names[index] + " (+" + itemRank[index] + ")";
             Debug.Log("아이템이 강화되었습니다");
             FreshSlot();
+            SetPlayerDamage();
         }
 
         else 
@@ -181,5 +192,15 @@ public class Inventory : MonoBehaviour
     public void UseGold(int gold) 
     {
         this.gold -= gold;
+    }
+
+    public void SetPlayerDamage() {
+        for (int i = 0; i < items.Count; i++) {
+            if (items[i].type == Item.ItemType.equip) {
+                if (itemAbility[i] > GameManager.instance.player.attackDamage) {
+                    GameManager.instance.player.SetDamage(itemAbility[i]);
+                }
+            }
+        }
     }
 }

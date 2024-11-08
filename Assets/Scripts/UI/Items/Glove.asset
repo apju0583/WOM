@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: Glove
   m_EditorClassIdentifier: 
   itemName: "\uC7A5\uAC11"
+  type: 2
   itemDesc: "\uC0B0 \uC815\uC0C1\uC5D0\uC11C\uC758 \uCD94\uC704\uB97C \uC870\uAE08
     \uB9C9\uC544\uC8FC\uB294 \uC7A5\uAC11\uC774\uB2E4."
   rank: 0
   price: 1200
+  ability: 0
   itemImage: {fileID: -432083122, guid: f057a6b35284b2b479cdab8979f9b4ae, type: 3}

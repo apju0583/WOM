@@ -59,6 +59,7 @@ public class Map : MonoBehaviour
 
             case "Home":
             case "Mountain_BotHouse":
+            case "Mountain_Player_House":
                 for (int i = 0; i < areaAnims.Length; i++) {
                     if (i == 3) {
                         areaAnims[i].SetBool("isLocate", true);

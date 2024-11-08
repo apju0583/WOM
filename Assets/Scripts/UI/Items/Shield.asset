@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Shield
   m_EditorClassIdentifier: 
   itemName: "\uBC29\uD328"
+  type: 2
   itemDesc: "\uB0B4 \uBAB8\uC5D0 \uB9DE\uB294 \uBC29\uD328\uC774\uB2E4."
   rank: 0
   price: 2600
+  ability: 0
   itemImage: {fileID: 1398487146, guid: f057a6b35284b2b479cdab8979f9b4ae, type: 3}

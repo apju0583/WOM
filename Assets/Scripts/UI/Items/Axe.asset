@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Axe
   m_EditorClassIdentifier: 
   itemName: "\uB3C4\uB07C"
+  type: 0
   itemDesc: "\uB098\uBB34\uB97C \uBCA8 \uB54C \uC720\uC6A9\uD55C \uB3C4\uB07C\uC774\uB2E4."
   rank: 0
   price: 200
+  ability: 2
   itemImage: {fileID: -880793211, guid: f057a6b35284b2b479cdab8979f9b4ae, type: 3}

@@ -446,6 +446,22 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void UseItem(int id) {
+        Image[] childSprite = slots[id].gameObject.GetComponentsInChildren<Image>();
+        Inventory inven = inventory.gameObject.GetComponent<Inventory>();
+
+        if (childSprite[1].sprite != null) {
+            if (slots[id].item.type == Item.ItemType.use) {
+                HideDesc();
+                player.RestoreHP(inven.itemAbility[id]);
+                SetHP(player.hp);
+                inven.RemoveItem(id);
+                itemBar.RefreshSlot();
+                Debug.Log("체력이 회복되었습니다");
+            }
+        }
+    }
+
     public void ShowShop() 
     {
         shopPanel.SetActive(true);

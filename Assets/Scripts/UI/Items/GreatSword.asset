@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: GreatSword
   m_EditorClassIdentifier: 
   itemName: "\uB300\uAC80"
+  type: 0
   itemDesc: "\uBB34\uAC70\uC6B4 \uB300\uAC80\uC774\uB2E4."
   rank: 0
   price: 1400
+  ability: 4
   itemImage: {fileID: -300982969, guid: f057a6b35284b2b479cdab8979f9b4ae, type: 3}

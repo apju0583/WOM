@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: Helmet
   m_EditorClassIdentifier: 
   itemName: "\uD22C\uAD6C"
+  type: 2
   itemDesc: "\uBA38\uB9AC\uB97C \uBCF4\uD638\uD574 \uC904 \uD22C\uAD6C\uC774\uB2E4."
   rank: 0
   price: 1500
+  ability: 0
   itemImage: {fileID: -1752798402, guid: f057a6b35284b2b479cdab8979f9b4ae, type: 3}
