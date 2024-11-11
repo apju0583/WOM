@@ -168,10 +168,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23a42a71d65750c45872a9ad2f11089e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 1
-  hp: 7
+  type: 0
+  hp: 12
   speed: 2
   damage: 1
+  dropItemA: {fileID: 11400000, guid: e8a6ffa15ebb8c3488c3c32a4a7573e0, type: 2}
+  dropItemB: {fileID: 11400000, guid: fa42dfca2cb177f458f409fd6f7e55af, type: 2}
+  probabilityA: 0.8
   nextXMove: 0
   nextYMove: 0
   range: 0

@@ -11,6 +11,10 @@ public class Monster : MonoBehaviour
     public int speed = 5;
     public int damage = 5;
 
+    public Item dropItemA;
+    public Item dropItemB;
+    public float probabilityA;
+
     [SerializeField] int nextXMove;
     [SerializeField] int nextYMove;
     [SerializeField] float range;
@@ -152,6 +156,7 @@ public class Monster : MonoBehaviour
         range = 100;
 
         hp -= damage;
+        SoundManager.instance.SFXPlay(11);
 
         if (hp <= 0) {
             spriteRenderer.color = new Color(1, 1, 1, 1);
@@ -171,7 +176,23 @@ public class Monster : MonoBehaviour
 
     public void Die() 
     {
+        SoundManager.instance.SFXPlay(12);
         Debug.Log("Enemy is Dead");
+        DropRandomItem();
         gameObject.SetActive(false);
+    }
+
+    private void DropRandomItem()
+    {
+        Item droppedItem = (UnityEngine.Random.value <= probabilityA) ? dropItemA : dropItemB;
+
+        if (droppedItem != null)
+        {
+            Inventory inventory = GameManager.instance.GetInventory().gameObject.GetComponent<Inventory>();
+            inventory.AddItem(droppedItem);
+            inventory.FreshSlot();
+            GameManager.instance.GetItemBar().RefreshSlot();
+            Debug.Log($"Dropped item: {droppedItem.name}");
+        }
     }
 }

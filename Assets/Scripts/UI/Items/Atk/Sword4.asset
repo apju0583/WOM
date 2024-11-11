@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 583e66efe60813c41aa66e86a770a38e, type: 3}
+  m_Name: Sword4
+  m_EditorClassIdentifier: 
+  itemName: "\uAD6C\uB984\uAC80"
+  type: 0
+  itemDesc: "\uAE30\uBCF8 \uACF5\uACA9\uB825 : 30\n\uD06C\uAE30\uC5D0 \uBE44\uD574
+    \uAC00\uBCCD\uACE0 \uC704\uD611\uC801\uC778 \uAC80\uC774\uB2E4."
+  rank: 0
+  price: 10000
+  ability: 30
+  itemImage: {fileID: -93739513, guid: 8809e08e7a1d3994892288b7aca921e7, type: 3}

@@ -13,77 +13,117 @@ public class QuestManager : MonoBehaviour
     public Text detail;
     public Text request;
 
-    void Awake() 
+    void Awake()
     {
-        if (instance == null) 
+        if (instance == null)
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
-
-        else 
+        else
         {
-            if (instance != this) 
+            if (instance != this)
             {
                 Destroy(this.gameObject);
             }
         }
     }
 
-    void Start() 
+    void Start()
     {
         title.text = "";
         detail.text = "";
         request.text = "";
     }
 
-    public void Refresh() 
+    public void Refresh()
     {
-        title.text = GameManager.instance.player.quest.questTitle;
-        detail.text = GameManager.instance.player.quest.questDetail;
-        Inventory inven = GameManager.instance.GetInventory().gameObject.GetComponent<Inventory>();
-        int itemIndex = inven.items.IndexOf(quests[GameManager.instance.player.quest.questId].requestItem);
-        int itemCnt = itemIndex == -1 ? 0 : inven.itemCounts[itemIndex];
-        request.text = GameManager.instance.player.quest.requestItem.itemName + " (" + itemCnt + "/" + GameManager.instance.player.quest.requestCount + ")";
-    }
+        if (GameManager.instance.player.quest != null)
+        {
+            int questId = GameManager.instance.player.quest.questId;
+            
+            if (questId >= 0 && questId < quests.Length)
+            {
+                Quest currentQuest = quests[questId];
+                title.text = currentQuest.questTitle;
+                detail.text = currentQuest.questDetail;
 
-    public void SetText() 
-    {
-        title.text = "";
-        detail.text = "";
-        request.text = "";
-    }
-
-    public void SetText(int index) 
-    {
-        title.text = quests[index].questTitle;
-        detail.text = quests[index].questDetail;
-    }
-
-    public void Accept(int index) 
-    {
-        GameManager.instance.player.quest = quests[index];
-        GameManager.instance.player.questStatus = false;
-        GameManager.instance.player.clearStatus[index] = false;
-        Debug.Log("퀘스트를 수락했습니다");
-        Refresh();
-    }
-
-    public bool CheckClear(int index) 
-    {
-        Inventory inven = GameManager.instance.GetInventory().gameObject.GetComponent<Inventory>();
-        int itemIndex = inven.items.IndexOf(quests[index].requestItem);
-
-        if (itemIndex == -1) {
-            return false;
+                Inventory inven = GameManager.instance.GetInventory().gameObject.GetComponent<Inventory>();
+                int itemIndex = inven.items.IndexOf(currentQuest.requestItem);
+                int itemCnt = itemIndex == -1 ? 0 : inven.itemCounts[itemIndex];
+                request.text = currentQuest.requestItem.itemName + " (" + itemCnt + "/" + currentQuest.requestCount + ")";
+            }
+            else
+            {
+                Debug.LogWarning("Assigned quest ID is out of bounds: " + questId);
+                ClearUI();
+            }
         }
-
-        return inven.itemCounts[itemIndex] >= quests[index].requestCount;
+        else
+        {
+            Debug.LogWarning("No quest assigned to the player.");
+            ClearUI();
+        }
     }
 
-    public void QuestClear(int index) 
+    private void ClearUI()
     {
-        if (CheckClear(index)) 
+        title.text = "";
+        detail.text = "";
+        request.text = "";
+    }
+
+    public void SetText()
+    {
+        ClearUI();
+    }
+
+    public void SetText(int index)
+    {
+        if (index >= 0 && index < quests.Length)
+        {
+            title.text = quests[index].questTitle;
+            detail.text = quests[index].questDetail;
+        }
+    }
+
+    public void Accept(int index)
+    {
+        if (index >= 0 && index < quests.Length)
+        {
+            GameManager.instance.player.quest = quests[index];
+            GameManager.instance.player.questStatus = false;
+            GameManager.instance.player.clearStatus[index] = false;
+            Debug.Log("Quest accepted: " + quests[index].questTitle);
+            Refresh();
+        }
+        else
+        {
+            Debug.LogWarning("Invalid quest index: " + index);
+        }
+    }
+
+    public bool CheckClear(int index)
+    {
+        if (index >= 0 && index < quests.Length)
+        {
+            Inventory inven = GameManager.instance.GetInventory().gameObject.GetComponent<Inventory>();
+            int itemIndex = inven.items.IndexOf(quests[index].requestItem);
+
+            if (itemIndex == -1)
+            {
+                return false;
+            }
+
+            return inven.itemCounts[itemIndex] >= quests[index].requestCount;
+        }
+        Debug.LogWarning("Invalid quest index for CheckClear: " + index);
+        return false;
+    }
+
+    public void QuestClear(int index)
+    {
+        if (CheckClear(index))
         {
             Inventory inven = GameManager.instance.GetInventory().gameObject.GetComponent<Inventory>();
             int itemIndex = inven.items.IndexOf(quests[index].requestItem);
@@ -91,11 +131,16 @@ public class QuestManager : MonoBehaviour
             inven.RemoveItem(itemIndex, quests[index].requestCount);
             inven.AddGold(quests[index].reward);
             inven.FreshSlot();
-            Debug.Log("\"" + quests[index].questTitle + "\"" + " 클리어!");
+            Debug.Log("Quest completed: " + quests[index].questTitle);
             GameManager.instance.player.quest = null;
             GameManager.instance.player.questStatus = false;
             GameManager.instance.player.clearStatus[index] = true;
-            SetText();
+            Debug.Log(GameManager.instance.player.clearStatus[index]);
+            ClearUI();
+        }
+        else
+        {
+            Debug.LogWarning("Quest cannot be cleared, requirements not met.");
         }
     }
 }

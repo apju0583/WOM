@@ -49,10 +49,10 @@ public class GameManager : MonoBehaviour
     public Player player;
     public GameObject[] hps;
     public GameObject[] halfHps;
+    public Text playerInfo;
     public int itemId;
     public bool isAction;
     bool mapShow;
-    [SerializeField] SceneAsset[] scenes;
     [SerializeField] GameObject selectPanel;
     [SerializeField] GameObject selectPanel2;
     [SerializeField] GameObject selectPanel3;
@@ -164,7 +164,7 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < QuestManager.instance.quests.Length; i++) 
         {
-            player.clearStatus[i] = false;
+            player.clearStatus.Add(false);
         }
     }
 
@@ -457,6 +457,7 @@ public class GameManager : MonoBehaviour
                 SetHP(player.hp);
                 inven.RemoveItem(id);
                 itemBar.RefreshSlot();
+                SoundManager.instance.SFXPlay(14);
                 Debug.Log("체력이 회복되었습니다");
             }
         }
@@ -535,6 +536,7 @@ public class GameManager : MonoBehaviour
             inven.AddItem(item[itemId]);
             itemBar.RefreshSlot();
             RefreshSell();
+            RefreshUpgrade();
             HideSelect();
         }
 
@@ -552,6 +554,7 @@ public class GameManager : MonoBehaviour
         inven.RemoveItem(itemId);
         itemBar.RefreshSlot();
         RefreshSell();
+        RefreshUpgrade();
         HideSelect2();
     }
 
@@ -564,6 +567,7 @@ public class GameManager : MonoBehaviour
             inven.UpgradeItem(itemId);
             itemBar.RefreshSlot();
             RefreshUpgrade();
+            RefreshSell();
             HideSelect3();
         }
 
@@ -673,7 +677,7 @@ public class GameManager : MonoBehaviour
 
                 case 2:
                     hps[0].SetActive(true);
-                    for (int i = 1; i < 4; i++) {
+                    for (int i = 1; i < 5; i++) {
                         hps[i].SetActive(false);
                     }
 
@@ -684,7 +688,7 @@ public class GameManager : MonoBehaviour
 
                 case 3:
                     hps[0].SetActive(true);
-                    for (int i = 1; i < 4; i++) {
+                    for (int i = 1; i < 5; i++) {
                         hps[i].SetActive(false);
                     }
 
@@ -698,7 +702,7 @@ public class GameManager : MonoBehaviour
                 case 4:
                     hps[0].SetActive(true);
                     hps[1].SetActive(true);
-                    for (int i = 2; i < 4; i++) {
+                    for (int i = 2; i < 5; i++) {
                         hps[i].SetActive(false);
                     }
 
@@ -710,7 +714,7 @@ public class GameManager : MonoBehaviour
                 case 5:
                     hps[0].SetActive(true);
                     hps[1].SetActive(true);
-                    for (int i = 2; i < 4; i++) {
+                    for (int i = 2; i < 5; i++) {
                         hps[i].SetActive(false);
                     }
 
@@ -798,64 +802,104 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void SetPlayerInfoText(int maxhp, int damage) {
+        playerInfo.text = "최대 체력: " + maxhp + " / 공격력: " + damage;
+    }
+
     public void Action(GameObject scanObj) 
     {
         scanObject = scanObj;
         ObjData objData = scanObject.GetComponent<ObjData>();
-        Talk(objData);
+        
+        if (objData != null)
+        {
+            bool conversationEnded = Talk(objData);
+
+            if (conversationEnded && objData.itemToGive != null)
+            {
+                AddItemToInventory(objData.itemToGive);
+                objData.itemToGive = null;
+                objData.id += 1;
+            }
+        }
 
         talkPanel.SetBool("isShow", isAction);
     }
 
-    void Talk(ObjData data) 
+    private void AddItemToInventory(Item item)
+    {
+        if (player.inventory != null)
+        {
+            player.inventory.AddItem(item);
+            Debug.Log("Item added to inventory: " + item.name);
+        }
+    }
+
+    private bool Talk(ObjData data)
     {
         string talkData = "";
 
-        if (talk.isAnim) 
+        if (talk.isAnim)
         {
             talk.SetMsg("");
-            return;
+            return false;
         }
 
-        else 
+        else
         {
-            if (data.isNPC && data.type == ObjData.NPCType.quest) 
+            if (data.isNPC && data.type == ObjData.NPCType.quest)
             {
-                if (player.quest != null && data.id % 1000 == 0) {
+                if (data.questId[0] == 0 && data.id % 1000 == 0 && player.clearStatus[data.questId[0]] == false && player.quest == null) {
                     data.id += 1;
                 }
-                if (player.clearStatus[data.questId[0]] && data.id % 1000 == 0) {
-                    data.id += 3;
+
+                else if (data.questId[0] != 0 && player.clearStatus[data.questId[0] - 1] && data.id % 1000 == 0 && player.clearStatus[data.questId[0]] == false && player.quest == null) {
+                    data.id += 1;
+                }
+
+                if (player.quest != null && player.quest.questId == data.questId[0] && data.id % 1000 == 0)
+                {
+                    data.id += 2;
+                }
+
+                if (player.clearStatus[data.questId[0]] && data.id % 1000 == 0)
+                {
+                    data.id += 4;
                 }
             }
 
-            if (data.isNPC && data.type == ObjData.NPCType.quest && (data.id % 1000 == 1 || data.id % 1000 == 4)) {
-                if (QuestManager.instance.CheckClear(data.questId[data.questIndex])) {
+            if (data.isNPC && data.type == ObjData.NPCType.quest && data.id % 1000 == 2)
+            {
+                if (QuestManager.instance.CheckClear(data.questId[data.questIndex]))
+                {
                     data.id += 1;
                 }
             }
             talkData = TalkManager.instance.GetTalk(data.id, talkIndex);
         }
 
-        if (talkData == null) 
+        if (talkData == null)
         {
-            if (data.type == ObjData.NPCType.quest) 
+            if (data.type == ObjData.NPCType.quest)
             {
-                switch (data.id % 1000) {
-                    case 0:
+                switch (data.id % 1000)
+                {
+                    case 1:
                         QuestManager.instance.Accept(data.questId[data.questIndex]);
-                        if (QuestManager.instance.CheckClear(data.questId[data.questIndex])) {
+                        if (QuestManager.instance.CheckClear(data.questId[data.questIndex]))
+                        {
                             data.id += 2;
                             break;
                         }
                         data.id += 1;
                         break;
 
-                    case 2:
+                    case 3:
                         QuestManager.instance.QuestClear(data.questId[data.questIndex]);
                         data.id += 1;
                         data.questIndex += 1;
-                        if (data.questIndex == data.questId.Length) {
+                        if (data.questIndex == data.questId.Length)
+                        {
                             data.type = ObjData.NPCType.normal;
                         }
                         break;
@@ -866,11 +910,13 @@ public class GameManager : MonoBehaviour
             }
             talkIndex = 0;
             isAction = false;
-            return;
+            return true;
         }
 
-        if (data.isNPC) {
-            switch (data.type) {
+        if (data.isNPC)
+        {
+            switch (data.type)
+            {
                 case ObjData.NPCType.merchant:
                     shopButtons.SetActive(true);
                     upgradeButton.SetActive(false);
@@ -880,7 +926,7 @@ public class GameManager : MonoBehaviour
                     shopButtons.SetActive(false);
                     upgradeButton.SetActive(true);
                     break;
-                    
+
                 case ObjData.NPCType.quest:
                 case ObjData.NPCType.normal:
                     shopButtons.SetActive(false);
@@ -892,5 +938,6 @@ public class GameManager : MonoBehaviour
 
         isAction = true;
         talkIndex += 1;
+        return false;
     }
 }

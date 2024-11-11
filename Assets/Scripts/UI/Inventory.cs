@@ -36,6 +36,9 @@ public class Inventory : MonoBehaviour
 
     void Start() {
         SetPlayerDamage();
+        SetPlayerMaxHp();
+        GameManager.instance.player.SetHp(GameManager.instance.player.maxHp);
+        GameManager.instance.SetHP(GameManager.instance.player.maxHp);
     }
 
     public void FreshSlot() 
@@ -89,9 +92,15 @@ public class Inventory : MonoBehaviour
                 names.Add(_item.itemName);
                 itemCounts.Add(1);
                 itemRank.Add(_item.rank);
+                itemAbility.Add(_item.ability);
                 Debug.Log("아이템이 추가되었습니다.");
                 FreshSlot();
-                SetPlayerDamage();
+                if (_item.type == Item.ItemType.atk) {
+                    SetPlayerDamage();
+                }
+                else if (_item.type == Item.ItemType.def) {
+                    SetPlayerMaxHp();
+                }
                 if (GameManager.instance.player.quest != null) 
                 {
                     GameManager.instance.player.questStatus = QuestManager.instance.CheckClear(GameManager.instance.player.quest.questId);
@@ -115,11 +124,17 @@ public class Inventory : MonoBehaviour
 
             if (itemCounts[index] == 0) 
             {
+                if (items[index].type == Item.ItemType.atk) {
+                    SetPlayerDamage();
+                }
+                else if (items[index].type == Item.ItemType.def) {
+                    SetPlayerMaxHp();
+                }
                 items.RemoveAt(index);
                 names.RemoveAt(index);
                 itemCounts.RemoveAt(index);
                 itemRank.RemoveAt(index);
-                SetPlayerDamage();
+                itemAbility.RemoveAt(index);
                 Debug.Log("아이템이 인벤토리에서 제거되었습니다");
             }
 
@@ -145,11 +160,17 @@ public class Inventory : MonoBehaviour
 
             if (itemCounts[index] <= 0) 
             {
+                if (items[index].type == Item.ItemType.atk) {
+                    SetPlayerDamage();
+                }
+                else if (items[index].type == Item.ItemType.def) {
+                    SetPlayerMaxHp();
+                }
                 items.RemoveAt(index);
                 names.RemoveAt(index);
                 itemCounts.RemoveAt(index);
                 itemRank.RemoveAt(index);
-                SetPlayerDamage();
+                itemAbility.RemoveAt(index);
                 Debug.Log("아이템이 인벤토리에서 제거되었습니다");
             }
 
@@ -169,7 +190,7 @@ public class Inventory : MonoBehaviour
 
     public void UpgradeItem(int index) 
     {
-        if (items.Count != 0 && items[index].type == Item.ItemType.equip) {
+        if (items.Count != 0 && items[index].type == Item.ItemType.atk) {
             itemRank[index] += 1;
             itemAbility[index] += 1;
             items[index].itemName = names[index] + " (+" + itemRank[index] + ")";
@@ -187,20 +208,37 @@ public class Inventory : MonoBehaviour
     public void AddGold(int gold) 
     {
         this.gold += gold;
+        SoundManager.instance.SFXPlay(13);
     }
 
     public void UseGold(int gold) 
     {
         this.gold -= gold;
+        SoundManager.instance.SFXPlay(13);
     }
 
     public void SetPlayerDamage() {
+        GameManager.instance.player.SetDamage(1);
         for (int i = 0; i < items.Count; i++) {
-            if (items[i].type == Item.ItemType.equip) {
+            if (items[i].type == Item.ItemType.atk) {
                 if (itemAbility[i] > GameManager.instance.player.attackDamage) {
                     GameManager.instance.player.SetDamage(itemAbility[i]);
                 }
             }
         }
+        GameManager.instance.SetPlayerInfoText(GameManager.instance.player.maxHp, GameManager.instance.player.attackDamage);
+    }
+
+    public void SetPlayerMaxHp() {
+        GameManager.instance.player.SetMaxHp(4);
+        for (int i = 0; i < items.Count; i++) {
+            if (items[i].type == Item.ItemType.def) {
+                if (itemAbility[i] > GameManager.instance.player.maxHp) {
+                    GameManager.instance.player.SetMaxHp(itemAbility[i]);
+                }
+            }
+        }
+        GameManager.instance.SetHP(GameManager.instance.player.maxHp);
+        GameManager.instance.SetPlayerInfoText(GameManager.instance.player.maxHp, GameManager.instance.player.attackDamage);
     }
 }

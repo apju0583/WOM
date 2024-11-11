@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Quest1
   m_EditorClassIdentifier: 
   questId: 0
-  questTitle: "\uC5EC\uAE34 \uC5B4\uB514..?"
-  questDetail: "\uB9C8\uC744\uC5D0 \uB300\uD55C \uC815\uBCF4\uAC00 \uC804\uD600 \uC5C6\uC73C\uB2C8
-    \uB9C8\uC744\uC5D0 \uB300\uD574 \uC798 \uC54C \uC0AC\uB78C\uC5D0\uAC8C \uCC3E\uC544\uAC00
-    \uBA87 \uAC00\uC9C0 \uC5EC\uCB64\uBCF4\uC790."
-  requestItem: {fileID: 0}
-  requestCount: 0
-  reward: 0
+  questTitle: "1. \uD560\uC544\uBC84\uC9C0 \uC9D1 \uCC3E\uC544\uAC00\uAE30"
+  questDetail: "\uB9F5\uC744 \uD655\uC778\uD558\uBA70 \uC9D1\uC73C\uB85C \uAC00\uBCF4\uC790.\n\uC9D1\uC5D0
+    \uC788\uB294 \uC0C1\uC790\uB97C \uCC3E\uC544\uBCF4\uBA74 \uBB34\uC5B8\uAC00 \uC544\uC774\uD15C\uC774
+    \uC788\uC744 \uAC83\uC774\uB77C\uACE0 \uD558\uC2E0\uB2E4.\n\uC544\uC774\uD15C\uC744
+    \uCC3E\uC544 \uB2E4\uC2DC \uC774\uC7A5\uB2D8\uAED8 \uB3CC\uC544\uC624\uC790."
+  requestItem: {fileID: 11400000, guid: 8ecb78aa9c328a848996dd202d8d3f2e, type: 2}
+  requestCount: 1
+  reward: 500

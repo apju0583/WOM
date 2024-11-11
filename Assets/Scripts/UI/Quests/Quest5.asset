@@ -16,6 +16,6 @@ MonoBehaviour:
   questTitle: "\uC7A5\uC791 \uAD6C\uD558\uAE30"
   questDetail: "\uB9C8\uC744 \uC0AC\uB78C\uB4E4\uC774 \uC7A5\uC791\uC774 \uD544\uC694\uD558\uB2E4\uBA70
     \uB3C4\uC6C0\uC744 \uC694\uCCAD\uD588\uB2E4."
-  requestItem: {fileID: 0}
-  requestCount: 0
-  reward: 0
+  requestItem: {fileID: 11400000, guid: d9f0b5a2eb8ed0a43a3537a36930761c, type: 2}
+  requestCount: 5
+  reward: 1000

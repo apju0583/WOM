@@ -345,6 +345,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 100
+  itemToGive: {fileID: 0}
   isNPC: 1
   type: 0
   questId: 13000000
@@ -8578,7 +8579,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2109489202}
   - component: {fileID: 2109489201}
-  - component: {fileID: 2109489200}
   - component: {fileID: 2109489203}
   m_Layer: 0
   m_Name: Main Camera
@@ -8587,14 +8587,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &2109489200
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2109489198}
-  m_Enabled: 1
 --- !u!20 &2109489201
 Camera:
   m_ObjectHideFlags: 0

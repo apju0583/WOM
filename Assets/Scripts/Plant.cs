@@ -5,7 +5,9 @@ using UnityEngine.UI;
 public class Plant : MonoBehaviour
 {
     public event Action OnCollected;
-    public Item plantItem;
+    public Item plantItemA;
+    public Item plantItemB;
+    public float probabilityA;
 
     public GameObject progressBarPrefab;
     private GameObject progressBarInstance;
@@ -21,7 +23,7 @@ public class Plant : MonoBehaviour
 
     void Update()
     {
-        if (isPlayerInRange && Input.GetKey(KeyCode.E)) //식물에 상호작용 시
+        if (isPlayerInRange && Input.GetKey(KeyCode.E))
         {
             if (!isCollecting)
             {
@@ -39,7 +41,6 @@ public class Plant : MonoBehaviour
                 }
             }
         }
-        
         else if (isCollecting && Input.GetKeyUp(KeyCode.E))
         {
             ResetCollection();
@@ -91,16 +92,23 @@ public class Plant : MonoBehaviour
     private void CollectPlant()
     {
         OnCollected?.Invoke();
-        AddPlantToInventory();
+        AddRandomPlantToInventory();
+        SoundManager.instance.SFXPlay(15);
         Destroy(gameObject);
         ResetCollection();
     }
 
-    private void AddPlantToInventory()
+    private void AddRandomPlantToInventory()
     {
         Inventory inventory = GameManager.instance.GetInventory().gameObject.GetComponent<Inventory>();
-        inventory.AddItem(plantItem);
-        inventory.FreshSlot();
-        GameManager.instance.GetItemBar().RefreshSlot();
+        Item selectedItem = (UnityEngine.Random.value <= probabilityA) ? plantItemA : plantItemB;
+
+        if (selectedItem != null)
+        {
+            inventory.AddItem(selectedItem);
+            inventory.FreshSlot();
+            GameManager.instance.GetItemBar().RefreshSlot();
+            Debug.Log("획득한 아이템 : " + selectedItem.name);
+        }
     }
 }

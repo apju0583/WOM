@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 583e66efe60813c41aa66e86a770a38e, type: 3}
+  m_Name: Branch
+  m_EditorClassIdentifier: 
+  itemName: "\uB098\uBB47\uAC00\uC9C0"
+  type: 3
+  itemDesc: "\uC218\uD480 \uC18D\uC5D0\uC11C \uB098\uC628 \uB098\uBB47\uAC00\uC9C0\uB2E4.
+    \uC5F4\uB9E4\uAC00 \uC5C6\uB294 \uC218\uD480\uC774\uC600\uB358 \uAC83 \uAC19\uB2E4.."
+  rank: 0
+  price: 80
+  ability: 0
+  itemImage: {fileID: 21300000, guid: edb95dd71eb7a79499077b8f598d10b1, type: 3}

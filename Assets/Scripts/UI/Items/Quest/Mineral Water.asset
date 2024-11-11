@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 583e66efe60813c41aa66e86a770a38e, type: 3}
+  m_Name: Mineral Water
+  m_EditorClassIdentifier: 
+  itemName: "\uC57D\uC218"
+  type: 3
+  itemDesc: "\uB9C8\uC744 \uC911\uBD80\uC5D0 \uC788\uB294 \uD638\uC218\uC5D0\uC11C
+    \uB5A0\uC628 \uC57D\uC218\uC774\uB2E4. \uD6A8\uACFC\uAC00 \uC88B\uC740 \uAC83
+    \uAC19\uB2E4."
+  rank: 0
+  price: 0
+  ability: 0
+  itemImage: {fileID: 21300000, guid: 1ba7904702eecc64da8e7ff666699cdd, type: 3}

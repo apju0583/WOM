@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 583e66efe60813c41aa66e86a770a38e, type: 3}
+  m_Name: Monster10_special
+  m_EditorClassIdentifier: 
+  itemName: "\uBAAC\uC2A4\uD130 \uACFC\uC77C"
+  type: 3
+  itemDesc: "\uBC15\uC950\uAC00 \uB4DC\uBB3C\uAC8C \uAC00\uC9C0\uACE0 \uC788\uB294
+    \uACFC\uC77C\uC774\uB2E4. \uBCC4 \uB9DB\uC740 \uC5C6\uB2E4."
+  rank: 0
+  price: 4000
+  ability: 0
+  itemImage: {fileID: 21300000, guid: bf93e0913b750ee419c837117dc8a72d, type: 3}

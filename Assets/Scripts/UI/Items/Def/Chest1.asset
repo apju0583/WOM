@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 583e66efe60813c41aa66e86a770a38e, type: 3}
+  m_Name: Chest1
+  m_EditorClassIdentifier: 
+  itemName: "\uC1E0\uC0AC\uC2AC \uC870\uB07C"
+  type: 1
+  itemDesc: "\uCD5C\uB300 \uCCB4\uB825 : 6\n\uB204\uAC00\uBD10\uB3C4 800\uACE8\uB4DC\uC758
+    \uAC00\uCE58\uB97C \uAC00\uC9C4 \uC870\uB07C\uB2E4."
+  rank: 0
+  price: 800
+  ability: 6
+  itemImage: {fileID: 1807907372, guid: 8809e08e7a1d3994892288b7aca921e7, type: 3}

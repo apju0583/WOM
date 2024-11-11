@@ -4,7 +4,7 @@ using UnityEngine;
 
 [CreateAssetMenu] public class Item : ScriptableObject
 {
-    public enum ItemType { equip, use, etc }
+    public enum ItemType { atk, def, use, etc }
 
     public string itemName;
     public ItemType type;

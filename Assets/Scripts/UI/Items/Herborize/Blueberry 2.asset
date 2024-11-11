@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 583e66efe60813c41aa66e86a770a38e, type: 3}
+  m_Name: Blueberry 2
+  m_EditorClassIdentifier: 
+  itemName: "\uBE14\uB8E8\uBCA0\uB9AC"
+  type: 3
+  itemDesc: "\uC798 \uC775\uC740 \uBE14\uB8E8\uBCA0\uB9AC\uAC00 \uC5EC\uB7FF \uB2EC\uB824
+    \uC788\uB2E4. \uC0C8\uCF64\uD55C \uB9DB\uC774 \uB0A0 \uAC83 \uAC19\uB2E4."
+  rank: 0
+  price: 750
+  ability: 0
+  itemImage: {fileID: 21300000, guid: d9df50516bc98ff40bfe5dd6b58f5207, type: 3}

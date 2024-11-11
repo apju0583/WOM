@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 8965354554825132337}
   - component: {fileID: 8965354554825132338}
   - component: {fileID: 8965354554825132336}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Monster4
-  m_TagString: Untagged
+  m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -168,10 +168,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23a42a71d65750c45872a9ad2f11089e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
+  type: 1
   hp: 10
-  speed: 5
-  damage: 3
+  speed: 2
+  damage: 1
+  dropItemA: {fileID: 11400000, guid: 424376bd13857dc46b188393a8720dc1, type: 2}
+  dropItemB: {fileID: 11400000, guid: c74ec27a46b6f6c49915ca41f82f053d, type: 2}
+  probabilityA: 0.8
   nextXMove: 0
   nextYMove: 0
   range: 0

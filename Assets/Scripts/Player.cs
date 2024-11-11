@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -8,21 +9,19 @@ public class Player : MonoBehaviour
 
     public string currentMapName;
     public string currentStartPointID;
-
     public float speed;
     private Rigidbody2D rigid;
     private Vector2 moveVelocity;
     private Vector2 lastMoveInput;
 
     GameObject scanObject;
-
     public LayerMask noPassLayer;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
 
     public Quest quest;
     public bool questStatus;
-    public Dictionary<int, bool> clearStatus = new Dictionary<int, bool>();
+    public List<bool> clearStatus;
 
     public float attackCooldown = 0.5f;
     private float nextAttackTime = 0f;
@@ -31,7 +30,9 @@ public class Player : MonoBehaviour
     public int attackDamage = 1;
     public LayerMask enemyLayers;
 
-    public int hp = 10;
+    public int maxHp = 4;
+    public int hp;
+    public string revivePoint = "RevivePoint";
     private WaitForFixedUpdate wait = new WaitForFixedUpdate();
     public Inventory inventory;
 
@@ -42,7 +43,6 @@ public class Player : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
-
         else
         {
             Destroy(gameObject);
@@ -53,11 +53,16 @@ public class Player : MonoBehaviour
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         inventory = GameObject.Find("Canvas/Inventory").GetComponent<Inventory>();
-        
+
         if (inventory == null)
         {
             Debug.LogError("No Inventory");
         }
+    }
+
+    void Start()
+    {
+        hp = maxHp;
     }
 
     private void Update()
@@ -155,6 +160,7 @@ public class Player : MonoBehaviour
     private void Attack()
     {
         animator.SetTrigger("AttackTrigger");
+        SoundManager.instance.SFXPlay(10);
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
 
         foreach (Collider2D enemy in hitEnemies)
@@ -199,10 +205,16 @@ public class Player : MonoBehaviour
         if (monster != null)
         {
             hp -= monster.damage;
+            SoundManager.instance.SFXPlay(11);
             StartCoroutine(KnockBack(enemy));
         }
-        
+
         Invoke("OffInvincible", 3);
+
+        if (hp <= 0)
+        {
+            Resurrect();
+        }
     }
 
     private IEnumerator KnockBack(GameObject enemy)
@@ -218,15 +230,46 @@ public class Player : MonoBehaviour
         spriteRenderer.color = new Color(1, 1, 1, 1);
     }
 
+    public void SetMaxHp(int hp) {
+        maxHp = hp;
+    }
+
+    public void SetHp(int hp) {
+        this.hp = hp;
+    }
+
     public void RestoreHP(int hp)
     {
         this.hp += hp;
-        if (this.hp > 10) {
-            this.hp = 10;
+        if (this.hp > maxHp) {
+            this.hp = maxHp;
         }
     }
 
     public void SetDamage(int damage) {
         attackDamage = damage;
+    }
+
+    private void Resurrect()
+    {
+        hp = maxHp;
+        StartCoroutine(LoadReviveScene());
+    }
+
+    private IEnumerator LoadReviveScene()
+    {
+        LoadingSceneController.Instance.LoadScene("Mountain_Player_House");
+        yield return new WaitUntil(() => SceneManager.GetActiveScene().name == "Mountain_Player_House");
+
+        GameObject reviveLocation = GameObject.Find(revivePoint);
+        if (reviveLocation != null)
+        {
+            transform.position = reviveLocation.transform.position;
+        }
+
+        else
+        {
+            Debug.LogWarning("부활 지점 X");
+        }
     }
 }

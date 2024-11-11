@@ -169,9 +169,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
-  hp: 20
+  hp: 150
   speed: 3
   damage: 5
+  dropItemA: {fileID: 11400000, guid: 13c929bce792ea74faff5b52ffe543d7, type: 2}
+  dropItemB: {fileID: 11400000, guid: 3778ef9f77437e24f95214b7fd7f142f, type: 2}
+  probabilityA: 0.8
   nextXMove: 0
   nextYMove: 0
   range: 0

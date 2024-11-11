@@ -172,6 +172,9 @@ MonoBehaviour:
   hp: 5
   speed: 1
   damage: 1
+  dropItemA: {fileID: 11400000, guid: f80ec24babb177b4ab7ef5d588d9092e, type: 2}
+  dropItemB: {fileID: 11400000, guid: f969bde2473224f4c879e4b1cd9235ee, type: 2}
+  probabilityA: 0.8
   nextXMove: 0
   nextYMove: 0
   range: 0
