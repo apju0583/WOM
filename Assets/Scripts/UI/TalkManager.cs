@@ -105,7 +105,7 @@ public class TalkManager : MonoBehaviour
         talkData.Add(333, new string[] { "바둑 한판 할래?" });
         talkData.Add(444, new string[] { "나랑 같이 놀래?" });
         talkData.Add(555, new string[] { "나른한 하루야.." });
-        talkData.Add(999, new string[] { "어느 새 열쇠를 모두 모아 여기까지 왔군", "아직 너가 모르는 것이 남아 있다", "너가 이제껏 헛고생을 했다는 것이지", "Comming Soon..." });
+        talkData.Add(999, new string[] { "어느새 열쇠를 모두 모아 여기까지 왔군", "아직 너가 모르는 것이 남아 있다", "너가 이제껏 헛고생을 했다는 것이지", "Comming Soon... (Early Access Ending)" });
 
         talkData.Add(123, new string[] {"상점"});
     }
